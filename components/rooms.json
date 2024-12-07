@@ -1,0 +1,712 @@
+[
+    {
+      "name":"Tomato",
+      "Details": [
+                {
+                  "romId": 101,
+                  "basePrice": 500,
+                  "currentBid": 550,
+                  "bidders": 15,
+                  "creatorName": "Farmer John",
+                  "harvestDate": "2024-08-15",
+                  "location": "California, USA",
+                  "qualityGrade": "A",
+                  "quantityAvailable": "100 kg"
+                },
+                {
+                  "romId": 102,
+                  "basePrice": 520,
+                  "currentBid": 580,
+                  "bidders": 18,
+                  "creatorName": "Farmer Alice",
+                  "harvestDate": "2024-08-20",
+                  "location": "Texas, USA",
+                  "qualityGrade": "A",
+                  "quantityAvailable": "120 kg"
+                },
+                {
+                  "romId": 103,
+                  "basePrice": 510,
+                  "currentBid": 560,
+                  "bidders": 13,
+                  "creatorName": "Farmer Bob",
+                  "harvestDate": "2024-08-18",
+                  "location": "Florida, USA",
+                  "qualityGrade": "B",
+                  "quantityAvailable": "110 kg"
+                },
+                {
+                  "romId": 104,
+                  "basePrice": 490,
+                  "currentBid": 540,
+                  "bidders": 10,
+                  "creatorName": "Farmer Carol",
+                  "harvestDate": "2024-08-10",
+                  "location": "New York, USA",
+                  "qualityGrade": "A",
+                  "quantityAvailable": "130 kg"
+                },
+                {
+                  "romId": 105,
+                  "basePrice": 530,
+                  "currentBid": 590,
+                  "bidders": 20,
+                  "creatorName": "Farmer Dave",
+                  "harvestDate": "2024-08-22",
+                  "location": "Georgia, USA",
+                  "qualityGrade": "A+",
+                  "quantityAvailable": "140 kg"
+                },
+                {
+                  "romId": 106,
+                  "basePrice": 495,
+                  "currentBid": 550,
+                  "bidders": 17,
+                  "creatorName": "Farmer Eve",
+                  "harvestDate": "2024-08-12",
+                  "location": "Arizona, USA",
+                  "qualityGrade": "A",
+                  "quantityAvailable": "115 kg"
+                }
+      ]
+    },
+    {
+      "name":"Potato",
+      "Details": [
+              {
+                "romId": 201,
+                "basePrice": 300,
+                "currentBid": 320,
+                "bidders": 12,
+                "creatorName": "Farmer Mary",
+                "harvestDate": "2024-07-20",
+                "location": "Idaho, USA",
+                "qualityGrade": "B+",
+                "quantityAvailable": "200 kg"
+              },
+              {
+                "romId": 202,
+                "basePrice": 310,
+                "currentBid": 340,
+                "bidders": 15,
+                "creatorName": "Farmer Joe",
+                "harvestDate": "2024-07-22",
+                "location": "Colorado, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "210 kg"
+              },
+              {
+                "romId": 203,
+                "basePrice": 320,
+                "currentBid": 350,
+                "bidders": 18,
+                "creatorName": "Farmer Mike",
+                "harvestDate": "2024-07-25",
+                "location": "Nebraska, USA",
+                "qualityGrade": "A+",
+                "quantityAvailable": "220 kg"
+              },
+              {
+                "romId": 204,
+                "basePrice": 290,
+                "currentBid": 310,
+                "bidders": 10,
+                "creatorName": "Farmer Lucy",
+                "harvestDate": "2024-07-18",
+                "location": "Montana, USA",
+                "qualityGrade": "B",
+                "quantityAvailable": "190 kg"
+              },
+              {
+                "romId": 205,
+                "basePrice": 315,
+                "currentBid": 335,
+                "bidders": 14,
+                "creatorName": "Farmer Jack",
+                "harvestDate": "2024-07-21",
+                "location": "Oregon, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "205 kg"
+              },
+              {
+                "romId": 206,
+                "basePrice": 325,
+                "currentBid": 360,
+                "bidders": 20,
+                "creatorName": "Farmer Nancy",
+                "harvestDate": "2024-07-26",
+                "location": "Washington, USA",
+                "qualityGrade": "A+",
+                "quantityAvailable": "215 kg"
+              }
+      ]
+    },
+    {
+      "name":"Carrot",
+      "Details": [
+              {
+                "romId": 301,
+                "basePrice": 400,
+                "currentBid": 450,
+                "bidders": 18,
+                "creatorName": "Farmer Jake",
+                "harvestDate": "2024-06-30",
+                "location": "Ontario, Canada",
+                "qualityGrade": "A",
+                "quantityAvailable": "80 kg"
+              },
+              {
+                "romId": 302,
+                "basePrice": 410,
+                "currentBid": 470,
+                "bidders": 20,
+                "creatorName": "Farmer Linda",
+                "harvestDate": "2024-07-01",
+                "location": "Quebec, Canada",
+                "qualityGrade": "A+",
+                "quantityAvailable": "85 kg"
+              },
+              {
+                "romId": 303,
+                "basePrice": 420,
+                "currentBid": 480,
+                "bidders": 22,
+                "creatorName": "Farmer Greg",
+                "harvestDate": "2024-07-03",
+                "location": "Manitoba, Canada",
+                "qualityGrade": "A",
+                "quantityAvailable": "90 kg"
+              },
+              {
+                "romId": 304,
+                "basePrice": 390,
+                "currentBid": 440,
+                "bidders": 16,
+                "creatorName": "Farmer Sarah",
+                "harvestDate": "2024-06-28",
+                "location": "Alberta, Canada",
+                "qualityGrade": "B+",
+                "quantityAvailable": "75 kg"
+              },
+              {
+                "romId": 305,
+                "basePrice": 430,
+                "currentBid": 490,
+                "bidders": 25,
+                "creatorName": "Farmer Tom",
+                "harvestDate": "2024-07-05",
+                "location": "Saskatchewan, Canada",
+                "qualityGrade": "A+",
+                "quantityAvailable": "95 kg"
+              },
+              {
+                "romId": 306,
+                "basePrice": 415,
+                "currentBid": 465,
+                "bidders": 19,
+                "creatorName": "Farmer Kate",
+                "harvestDate": "2024-06-29",
+                "location": "Nova Scotia, Canada",
+                "qualityGrade": "A",
+                "quantityAvailable": "85 kg"
+              }
+        ]
+    },
+    {
+      "name":"Cabbage",
+      "Details": [
+              {
+                "romId": 401,
+                "basePrice": 350,
+                "currentBid": 400,
+                "bidders": 10,
+                "creatorName": "Farmer Emily",
+                "harvestDate": "2024-09-10",
+                "location": "Kentucky, USA",
+                "qualityGrade": "B",
+                "quantityAvailable": "150 kg"
+              },
+              {
+                "romId": 402,
+                "basePrice": 360,
+                "currentBid": 410,
+                "bidders": 13,
+                "creatorName": "Farmer Frank",
+                "harvestDate": "2024-09-12",
+                "location": "Tennessee, USA",
+                "qualityGrade": "B+",
+                "quantityAvailable": "155 kg"
+              },
+              {
+                "romId": 403,
+                "basePrice": 370,
+                "currentBid": 420,
+                "bidders": 15,
+                "creatorName": "Farmer Helen",
+                "harvestDate": "2024-09-14",
+                "location": "Virginia, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "160 kg"
+              },
+              {
+                "romId": 404,
+                "basePrice": 340,
+                "currentBid": 390,
+                "bidders": 8,
+                "creatorName": "Farmer Ian",
+                "harvestDate": "2024-09-08",
+                "location": "West Virginia, USA",
+                "qualityGrade": "B",
+                "quantityAvailable": "145 kg"
+              },
+              {
+                "romId": 405,
+                "basePrice": 380,
+                "currentBid": 430,
+                "bidders": 17,
+                "creatorName": "Farmer Jack",
+                "harvestDate": "2024-09-16",
+                "location": "North Carolina, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "165 kg"
+              },
+              {
+                "romId": 406,
+                "basePrice": 355,
+                "currentBid": 405,
+                "bidders": 12,
+                "creatorName": "Farmer Karen",
+                "harvestDate": "2024-09-11",
+                "location": "South Carolina, USA",
+                "qualityGrade": "B+",
+                "quantityAvailable": "150 kg"
+              }
+          ]
+    },
+    {
+      "name":"Lettuce",
+      "Details": [
+              {
+                "romId": 501,
+                "basePrice": 250,
+                "currentBid": 275,
+                "bidders": 8,
+                "creatorName": "Farmer Leo",
+                "harvestDate": "2024-10-05",
+                "location": "Maine, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "60 kg"
+              },
+              {
+                "romId": 502,
+                "basePrice": 255,
+                "currentBid": 280,
+                "bidders": 10,
+                "creatorName": "Farmer Molly",
+                "harvestDate": "2024-10-07",
+                "location": "Vermont, USA",
+                "qualityGrade": "A+",
+                "quantityAvailable": "65 kg"
+              },
+              {
+                "romId": 503,
+                "basePrice": 260,
+                "currentBid": 285,
+                "bidders": 12,
+                "creatorName": "Farmer Nathan",
+                "harvestDate": "2024-10-09",
+                "location": "New Hampshire, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "70 kg"
+              },
+              {
+                "romId": 504,
+                "basePrice": 245,
+                "currentBid": 270,
+                "bidders": 6,
+                "creatorName": "Farmer Olivia",
+                "harvestDate": "2024-10-03",
+                "location": "Massachusetts, USA",
+                "qualityGrade": "B+",
+                "quantityAvailable": "55 kg"
+              },
+              {
+                "romId": 505,
+                "basePrice": 265,
+                "currentBid": 290,
+                "bidders": 14,
+                "creatorName": "Farmer Paul",
+                "harvestDate": "2024-10-11",
+                "location": "Connecticut, USA",
+                "qualityGrade": "A+",
+                "quantityAvailable": "75 kg"
+              },
+              {
+                "romId": 506,
+                "basePrice": 250,
+                "currentBid": 275,
+                "bidders": 9,
+                "creatorName": "Farmer Quinn",
+                "harvestDate": "2024-10-04",
+                "location": "Rhode Island, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "60 kg"
+              }
+        ]
+    },
+    {
+        "name":"Broccoli",
+        "Details": [
+              {
+                "romId": 601,
+                "basePrice": 480,
+                "currentBid": 500,
+                "bidders": 16,
+                "creatorName": "Farmer Robert",
+                "harvestDate": "2024-11-20",
+                "location": "New Jersey, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "95 kg"
+              },
+              {
+                "romId": 602,
+                "basePrice": 490,
+                "currentBid": 510,
+                "bidders": 18,
+                "creatorName": "Farmer Stella",
+                "harvestDate": "2024-11-22",
+                "location": "Delaware, USA",
+                "qualityGrade": "A+",
+                "quantityAvailable": "100 kg"
+              },
+              {
+                "romId": 603,
+                "basePrice": 500,
+                "currentBid": 520,
+                "bidders": 20,
+                "creatorName": "Farmer Tony",
+                "harvestDate": "2024-11-24",
+                "location": "Maryland, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "105 kg"
+              },
+              {
+                "romId": 604,
+                "basePrice": 470,
+                "currentBid": 490,
+                "bidders": 14,
+                "creatorName": "Farmer Ursula",
+                "harvestDate": "2024-11-18",
+                "location": "Pennsylvania, USA",
+                "qualityGrade": "B+",
+                "quantityAvailable": "90 kg"
+              },
+              {
+                "romId": 605,
+                "basePrice": 510,
+                "currentBid": 530,
+                "bidders": 22,
+                "creatorName": "Farmer Victor",
+                "harvestDate": "2024-11-26",
+                "location": "New York, USA",
+                "qualityGrade": "A+",
+                "quantityAvailable": "110 kg"
+              },
+              {
+                "romId": 606,
+                "basePrice": 475,
+                "currentBid": 495,
+                "bidders": 15,
+                "creatorName": "Farmer Wendy",
+                "harvestDate": "2024-11-19",
+                "location": "Virginia, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "92 kg"
+              }
+        ]
+    },
+    {
+        "name":"Spinach",
+        "Details": [
+          {
+            "romId": 701,
+            "basePrice": 350,
+            "currentBid": 370,
+            "bidders": 10,
+            "creatorName": "Farmer Xander",
+            "harvestDate": "2024-12-05",
+            "location": "Ohio, USA",
+            "qualityGrade": "A",
+            "quantityAvailable": "85 kg"
+          },
+          {
+            "romId": 702,
+            "basePrice": 360,
+            "currentBid": 380,
+            "bidders": 12,
+            "creatorName": "Farmer Yvonne",
+            "harvestDate": "2024-12-07",
+            "location": "Michigan, USA",
+            "qualityGrade": "A+",
+            "quantityAvailable": "90 kg"
+          },
+          {
+            "romId": 703,
+            "basePrice": 370,
+            "currentBid": 390,
+            "bidders": 14,
+            "creatorName": "Farmer Zack",
+            "harvestDate": "2024-12-09",
+            "location": "Indiana, USA",
+            "qualityGrade": "A",
+            "quantityAvailable": "95 kg"
+          },
+          {
+            "romId": 704,
+            "basePrice": 340,
+            "currentBid": 360,
+            "bidders": 8,
+            "creatorName": "Farmer Amy",
+            "harvestDate": "2024-12-03",
+            "location": "Illinois, USA",
+            "qualityGrade": "B+",
+            "quantityAvailable": "80 kg"
+          },
+          {
+            "romId": 705,
+            "basePrice": 375,
+            "currentBid": 395,
+            "bidders": 15,
+            "creatorName": "Farmer Ben",
+            "harvestDate": "2024-12-10",
+            "location": "Wisconsin, USA",
+            "qualityGrade": "A+",
+            "quantityAvailable": "100 kg"
+          },
+          {
+            "romId": 706,
+            "basePrice": 355,
+            "currentBid": 375,
+            "bidders": 11,
+            "creatorName": "Farmer Clara",
+            "harvestDate": "2024-12-04",
+            "location": "Minnesota, USA",
+            "qualityGrade": "A",
+            "quantityAvailable": "85 kg"
+          }
+      ]
+    },
+    {
+        "name":"Onion",
+        "Details": [
+              {
+                "romId": 801,
+                "basePrice": 200,
+                "currentBid": 220,
+                "bidders": 7,
+                "creatorName": "Farmer Dave",
+                "harvestDate": "2024-08-01",
+                "location": "Texas, USA",
+                "qualityGrade": "B",
+                "quantityAvailable": "150 kg"
+              },
+              {
+                "romId": 802,
+                "basePrice": 210,
+                "currentBid": 230,
+                "bidders": 9,
+                "creatorName": "Farmer Ella",
+                "harvestDate": "2024-08-03",
+                "location": "Oklahoma, USA",
+                "qualityGrade": "B+",
+                "quantityAvailable": "160 kg"
+              },
+              {
+                "romId": 803,
+                "basePrice": 220,
+                "currentBid": 240,
+                "bidders": 12,
+                "creatorName": "Farmer Frank",
+                "harvestDate": "2024-08-05",
+                "location": "Kansas, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "170 kg"
+              },
+              {
+                "romId": 804,
+                "basePrice": 190,
+                "currentBid": 210,
+                "bidders": 5,
+                "creatorName": "Farmer Grace",
+                "harvestDate": "2024-07-30",
+                "location": "Nebraska, USA",
+                "qualityGrade": "B",
+                "quantityAvailable": "140 kg"
+              },
+              {
+                "romId": 805,
+                "basePrice": 225,
+                "currentBid": 245,
+                "bidders": 14,
+                "creatorName": "Farmer Henry",
+                "harvestDate": "2024-08-07",
+                "location": "South Dakota, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "180 kg"
+              },
+              {
+                "romId": 806,
+                "basePrice": 205,
+                "currentBid": 225,
+                "bidders": 10,
+                "creatorName": "Farmer Irene",
+                "harvestDate": "2024-08-02",
+                "location": "North Dakota, USA",
+                "qualityGrade": "B+",
+                "quantityAvailable": "155 kg"
+              }
+      ]
+    },
+    {
+        "name":"Pepper",
+        "Details": [
+              {
+                "romId": 901,
+                "basePrice": 420,
+                "currentBid": 450,
+                "bidders": 13,
+                "creatorName": "Farmer Jake",
+                "harvestDate": "2024-09-05",
+                "location": "Arizona, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "100 kg"
+              },
+              {
+                "romId": 902,
+                "basePrice": 430,
+                "currentBid": 460,
+                "bidders": 16,
+                "creatorName": "Farmer Kim",
+                "harvestDate": "2024-09-07",
+                "location": "New Mexico, USA",
+                "qualityGrade": "A+",
+                "quantityAvailable": "110 kg"
+              },
+              {
+                "romId": 903,
+                "basePrice": 440,
+                "currentBid": 470,
+                "bidders": 18,
+                "creatorName": "Farmer Leo",
+                "harvestDate": "2024-09-09",
+                "location": "Utah, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "120 kg"
+              },
+              {
+                "romId": 904,
+                "basePrice": 410,
+                "currentBid": 440,
+                "bidders": 10,
+                "creatorName": "Farmer Mia",
+                "harvestDate": "2024-09-03",
+                "location": "Nevada, USA",
+                "qualityGrade": "B+",
+                "quantityAvailable": "90 kg"
+              },
+              {
+                "romId": 905,
+                "basePrice": 450,
+                "currentBid": 480,
+                "bidders": 20,
+                "creatorName": "Farmer Noah",
+                "harvestDate": "2024-09-11",
+                "location": "Colorado, USA",
+                "qualityGrade": "A+",
+                "quantityAvailable": "130 kg"
+              },
+              {
+                "romId": 906,
+                "basePrice": 415,
+                "currentBid": 445,
+                "bidders": 12,
+                "creatorName": "Farmer Olivia",
+                "harvestDate": "2024-09-04",
+                "location": "Wyoming, USA",
+                "qualityGrade": "A",
+                "quantityAvailable": "95 kg"
+              }
+        ]
+    },
+    {
+        "name":"Corn",
+        "Details": [
+                {
+                    "romId": 1001,
+                    "basePrice": 150,
+                    "currentBid": 170,
+                    "bidders": 9,
+                    "creatorName": "Farmer Paul",
+                    "harvestDate": "2024-07-25",
+                    "location": "Iowa, USA",
+                    "qualityGrade": "B+",
+                    "quantityAvailable": "300 kg"
+                },
+                {
+                    "romId": 1002,
+                    "basePrice": 160,
+                    "currentBid": 180,
+                    "bidders": 12,
+                    "creatorName": "Farmer Quinn",
+                    "harvestDate": "2024-07-27",
+                    "location": "Illinois, USA",
+                    "qualityGrade": "A",
+                    "quantityAvailable": "310 kg"
+                },
+                {
+                    "romId": 1003,
+                    "basePrice": 170,
+                    "currentBid": 190,
+                    "bidders": 14,
+                    "creatorName": "Farmer Rachel",
+                    "harvestDate": "2024-07-29",
+                    "location": "Indiana, USA",
+                    "qualityGrade": "A+",
+                    "quantityAvailable": "320 kg"
+                },
+                {
+                    "romId": 1004,
+                    "basePrice": 140,
+                    "currentBid": 160,
+                    "bidders": 7,
+                    "creatorName": "Farmer Sam",
+                    "harvestDate": "2024-07-23",
+                    "location": "Nebraska, USA",
+                    "qualityGrade": "B",
+                    "quantityAvailable": "290 kg"
+                },
+                {
+                    "romId": 1005,
+                    "basePrice": 175,
+                    "currentBid": 195,
+                    "bidders": 16,
+                    "creatorName": "Farmer Tina",
+                    "harvestDate": "2024-07-30",
+                    "location": "Kansas, USA",
+                    "qualityGrade": "A+",
+                    "quantityAvailable": "330 kg"
+                },
+                {
+                    "romId": 1006,
+                    "basePrice": 155,
+                    "currentBid": 175,
+                    "bidders": 10,
+                    "creatorName": "Farmer Uma",
+                    "harvestDate": "2024-07-24",
+                    "location": "Missouri, USA",
+                    "qualityGrade": "A",
+                    "quantityAvailable": "300 kg"
+                }
+                ]
+     }
+]

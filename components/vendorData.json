@@ -1,0 +1,451 @@
+[
+    {
+      "id": 1,
+      "name": "tomato",
+      "description": "A ripe tomato",
+      "vendors": [
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Tomato Land",
+          "image": "",
+          "price": "1.8",
+          "quantity": "10 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Veggie Delight",
+          "image": "",
+          "price": "1.7",
+          "quantity": "8 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Red Farms",
+          "image": "",
+          "price": "1.9",
+          "quantity": "12 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Healthy Harvest",
+          "image": "",
+          "price": "1.6",
+          "quantity": "15 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Farm Fresh",
+          "image": "",
+          "price": "2.0",
+          "quantity": "7 kg",
+          "negotiable": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "potato",
+      "description": "A ripe potato",
+      "vendors": [
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Spud King",
+          "image": "",
+          "price": "0.9",
+          "quantity": "20 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Veggie Delight",
+          "image": "",
+          "price": "1.0",
+          "quantity": "25 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Potato Paradise",
+          "image": "",
+          "price": "0.8",
+          "quantity": "30 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Healthy Harvest",
+          "image": "",
+          "price": "1.1",
+          "quantity": "18 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Farm Fresh",
+          "image": "",
+          "price": "0.9",
+          "quantity": "22 kg",
+          "negotiable": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "carrot",
+      "description": "A fresh carrot",
+      "vendors": [
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Carrot Patch",
+          "image": "",
+          "price": "1.5",
+          "quantity": "10 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Veggie Delight",
+          "image": "",
+          "price": "1.6",
+          "quantity": "8 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Healthy Harvest",
+          "image": "",
+          "price": "1.7",
+          "quantity": "12 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Farm Fresh",
+          "image": "",
+          "price": "1.8",
+          "quantity": "7 kg",
+          "negotiable": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "cabbage",
+      "description": "A leafy cabbage",
+      "vendors": [
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Green Valley",
+          "image": "",
+          "price": "2.0",
+          "quantity": "10 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Veggie Delight",
+          "image": "",
+          "price": "2.1",
+          "quantity": "8 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Healthy Harvest",
+          "image": "",
+          "price": "1.9",
+          "quantity": "12 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Farm Fresh",
+          "image": "",
+          "price": "2.2",
+          "quantity": "7 kg",
+          "negotiable": false
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "lettuce",
+      "description": "A fresh lettuce",
+      "vendors": [
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Leafy Greens",
+          "image": "",
+          "price": "1.8",
+          "quantity": "10 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Veggie Delight",
+          "image": "",
+          "price": "1.7",
+          "quantity": "8 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Healthy Harvest",
+          "image": "",
+          "price": "1.9",
+          "quantity": "12 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Farm Fresh",
+          "image": "",
+          "price": "2.0",
+          "quantity": "7 kg",
+          "negotiable": false
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "broccoli",
+      "description": "A fresh broccoli",
+      "vendors": [
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Green Bounty",
+          "image": "",
+          "price": "2.5",
+          "quantity": "10 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Veggie Delight",
+          "image": "",
+          "price": "2.6",
+          "quantity": "8 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Healthy Harvest",
+          "image": "",
+          "price": "2.4",
+          "quantity": "12 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Farm Fresh",
+          "image": "",
+          "price": "2.3",
+          "quantity": "7 kg",
+          "negotiable": false
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "spinach",
+      "description": "A fresh spinach",
+      "vendors": [
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Spinach Field",
+          "image": "",
+          "price": "1.2",
+          "quantity": "10 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Veggie Delight",
+          "image": "",
+          "price": "1.3",
+          "quantity": "8 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Healthy Harvest",
+          "image": "",
+          "price": "1.4",
+          "quantity": "12 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Farm Fresh",
+          "image": "",
+          "price": "1.5",
+          "quantity": "7 kg",
+          "negotiable": false
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "onion",
+      "description": "A fresh onion",
+      "vendors": [
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Onion House",
+          "image": "",
+          "price": "0.7",
+          "quantity": "15 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Veggie Delight",
+          "image": "",
+          "price": "0.8",
+          "quantity": "18 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Healthy Harvest",
+          "image": "",
+          "price": "0.6",
+          "quantity": "10 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Farm Fresh",
+          "image": "",
+          "price": "0.9",
+          "quantity": "12 kg",
+          "negotiable": false
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "pepper",
+      "description": "A fresh pepper",
+      "vendors": [
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Pepper Market",
+          "image": "",
+          "price": "1.1",
+          "quantity": "10 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Veggie Delight",
+          "image": "",
+          "price": "1.2",
+          "quantity": "8 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Healthy Harvest",
+          "image": "",
+          "price": "1.3",
+          "quantity": "12 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Farm Fresh",
+          "image": "",
+          "price": "1.0",
+          "quantity": "7 kg",
+          "negotiable": false
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "corn",
+      "description": "A fresh corn",
+      "vendors": [
+        {
+          "bulk": true,
+          "retail": true,
+          "name": "Cornfield Market",
+          "image": "",
+          "price": "0.5",
+          "quantity": "20 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Veggie Delight",
+          "image": "",
+          "price": "0.6",
+          "quantity": "25 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": false,
+          "retail": true,
+          "name": "Healthy Harvest",
+          "image": "",
+          "price": "0.4",
+          "quantity": "15 kg",
+          "negotiable": false
+        },
+        {
+          "bulk": true,
+          "retail": false,
+          "name": "Farm Fresh",
+          "image": "",
+          "price": "0.7",
+          "quantity": "18 kg",
+          "negotiable": false
+        }
+      ]
+    }
+  ]
+  
