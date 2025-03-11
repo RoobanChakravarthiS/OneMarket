@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -17,7 +17,7 @@ import LottieView from 'lottie-react-native';
 // Suppress warnings about deprecated methods
 LogBox.ignoreLogs(['Warning: ...']);
 
-const Market = ({ navigation, route }) => {
+const Market = ({navigation, route}) => {
   const userId = route.params.userId;
   const username = route.params.username;
   const [curr, setCurr] = useState(0);
@@ -37,7 +37,9 @@ const Market = ({ navigation, route }) => {
     const fetching = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://192.168.220.154:1111/getmarkethub'); // Update to your backend URL
+        const response = await fetch(
+          'http://192.168.23.154:1102/products/allproducts',
+        ); // Update to your backend URL
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -61,15 +63,15 @@ const Market = ({ navigation, route }) => {
     }
   }, [curr, data, filter]);
 
-  const applyFilters = (data) => {
-    const cropIdToFilter = curr + 1;
+  const applyFilters = data => {
+    const idToFilter = curr + 1;
 
-    // Filter by cropId
-    const filteredByCropId = data.filter(item => item.cropid === cropIdToFilter);
-    console.log('Data After CropId Filter:', filteredByCropId);
+    // Filter by id
+    const filteredByid = data.filter(item => item.id === idToFilter);
+    console.log('Data After id Filter:', filteredByid);
 
     // Apply each filter
-    const filteredByPriceRange = filterByPriceRange(filteredByCropId);
+    const filteredByPriceRange = filterByPriceRange(filteredByid);
     console.log('Data After Price Range Filter:', filteredByPriceRange);
 
     const filteredByNegotiable = filterByNegotiable(filteredByPriceRange);
@@ -84,35 +86,31 @@ const Market = ({ navigation, route }) => {
     setFilteredData(filteredByRetail);
   };
 
-  const filterByPriceRange = (items) => {
+  const filterByPriceRange = items => {
     return items.filter(
       item =>
         Number(item.price) >= filter.priceRange[0] &&
-        Number(item.price) <= filter.priceRange[1]
+        Number(item.price) <= filter.priceRange[1],
     );
   };
 
-  const filterByNegotiable = (items) => {
+  const filterByNegotiable = items => {
     if (!filter.negotiable) return items;
     return items.filter(
       item =>
         (filter.negotiable === 'Negotiable' && item.negotiable) ||
-        (filter.negotiable === 'Fixed Price' && !item.negotiable)
+        (filter.negotiable === 'Fixed Price' && !item.negotiable),
     );
   };
 
-  const filterByBulk = (items) => {
+  const filterByBulk = items => {
     if (!filter.bulk) return items;
-    return items.filter(
-      item => item.bulk === (filter.bulk === 'BULK')
-    );
+    return items.filter(item => item.bulk === (filter.bulk === 'BULK'));
   };
 
-  const filterByRetail = (items) => {
+  const filterByRetail = items => {
     if (!filter.retail) return items;
-    return items.filter(
-      item => item.retail === (filter.retail === 'RETAIL')
-    );
+    return items.filter(item => item.retail === (filter.retail === 'RETAIL'));
   };
 
   const toggleModal = () => {
@@ -121,14 +119,14 @@ const Market = ({ navigation, route }) => {
 
   const handleOrder = item => {
     console.log('Order Item:', item); // Debug: Log selected item
-    navigation.navigate('Payment', { item, username});
+    navigation.navigate('Payment', {item, username});
   };
 
-  const FilterButton = ({ title, value }) => (
+  const FilterButton = ({title, value}) => (
     <TouchableOpacity
       style={[
         styles.filterOption,
-        { backgroundColor: filter[value] === title ? '#007BFF' : '#e0e0e0' },
+        {backgroundColor: filter[value] === title ? '#007BFF' : '#e0e0e0'},
       ]}
       onPress={() =>
         setFilter(prev => ({
@@ -171,7 +169,7 @@ const Market = ({ navigation, route }) => {
                   <Image source={profile} style={styles.imagetop} />
                   <View style={styles.vendorDetails}>
                     <Text style={styles.text}>Farmer: {username}</Text>
-                    <Text style={styles.text}>Crop: {item.cropname}</Text>
+                    <Text style={styles.text}>Crop: {item.crop}</Text>
                     <Text style={styles.text}>Price: ₹{item.price}</Text>
                     <Text style={styles.text}>
                       Rating: {item.negotiable ? 'Negotiable' : 'Fixed Price'}
@@ -198,82 +196,81 @@ const Market = ({ navigation, route }) => {
 
       {/* Modal for filters */}
       <Modal
-  animationType="slide"
-  transparent={true}
-  visible={isModalVisible}
-  onRequestClose={toggleModal}>
-  <View style={styles.modalOverlay}>
-    <View style={styles.modalContent}>
-      <Text style={styles.modalTitle}>Filter Options</Text>
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={toggleModal}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Filter Options</Text>
 
-      <Text style={styles.filterTitle}>Price Range</Text>
-      <Slider
-        style={styles.slider}
-        minimumValue={0}
-        maximumValue={100} // Adjust based on your price range
-        step={1}
-        value={filter.priceRange[0]}
-        onValueChange={value =>
-          setFilter(prev => ({
-            ...prev,
-            priceRange: [value, prev.priceRange[1]],
-          }))
-        }
-        minimumTrackTintColor="#007BFF"
-        maximumTrackTintColor="#e0e0e0"
-      />
-      <Slider
-        style={styles.slider}
-        minimumValue={0}
-        maximumValue={100} // Adjust based on your price range
-        step={1}
-        value={filter.priceRange[1]}
-        onValueChange={value =>
-          setFilter(prev => ({
-            ...prev,
-            priceRange: [prev.priceRange[0], value],
-          }))
-        }
-        minimumTrackTintColor="#007BFF"
-        maximumTrackTintColor="#e0e0e0"
-      />
-      <Text style={styles.sliderText}>
-        Price: ₹{filter.priceRange[0]} -₹{filter.priceRange[1]}
-      </Text>
+            <Text style={styles.filterTitle}>Price Range</Text>
+            <Slider
+              style={styles.slider}
+              minimumValue={0}
+              maximumValue={100} // Adjust based on your price range
+              step={1}
+              value={filter.priceRange[0]}
+              onValueChange={value =>
+                setFilter(prev => ({
+                  ...prev,
+                  priceRange: [value, prev.priceRange[1]],
+                }))
+              }
+              minimumTrackTintColor="#007BFF"
+              maximumTrackTintColor="#e0e0e0"
+            />
+            <Slider
+              style={styles.slider}
+              minimumValue={0}
+              maximumValue={100} // Adjust based on your price range
+              step={1}
+              value={filter.priceRange[1]}
+              onValueChange={value =>
+                setFilter(prev => ({
+                  ...prev,
+                  priceRange: [prev.priceRange[0], value],
+                }))
+              }
+              minimumTrackTintColor="#007BFF"
+              maximumTrackTintColor="#e0e0e0"
+            />
+            <Text style={styles.sliderText}>
+              Price: ₹{filter.priceRange[0]} -₹{filter.priceRange[1]}
+            </Text>
 
-      <Text style={styles.filterTitle}>Negotiable</Text>
-      <View style={styles.buttonGroup}>
-        <FilterButton title="Negotiable" value="negotiable" />
-        <FilterButton title="Fixed Price" value="negotiable" />
-      </View>
+            <Text style={styles.filterTitle}>Negotiable</Text>
+            <View style={styles.buttonGroup}>
+              <FilterButton title="Negotiable" value="negotiable" />
+              <FilterButton title="Fixed Price" value="negotiable" />
+            </View>
 
-      <Text style={styles.filterTitle}>Bulk</Text>
-      <View style={styles.buttonGroup}>
-        <FilterButton title="BULK" value="bulk" />
-        <FilterButton title="No BULK" value="bulk" />
-      </View>
+            <Text style={styles.filterTitle}>Bulk</Text>
+            <View style={styles.buttonGroup}>
+              <FilterButton title="BULK" value="bulk" />
+              <FilterButton title="No BULK" value="bulk" />
+            </View>
 
-      <Text style={styles.filterTitle}>Retail</Text>
-      <View style={styles.buttonGroup}>
-        <FilterButton title="RETAIL" value="retail" />
-        <FilterButton title="No RETAIL" value="retail" />
-      </View>
+            <Text style={styles.filterTitle}>Retail</Text>
+            <View style={styles.buttonGroup}>
+              <FilterButton title="RETAIL" value="retail" />
+              <FilterButton title="No RETAIL" value="retail" />
+            </View>
 
-      <TouchableOpacity
-        style={styles.applyButton}
-        onPress={() => {
-          applyFilters(data); // Apply filters with current data
-          toggleModal();
-        }}>
-        <Text style={styles.applyButtonText}>Apply Filter</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-        <Text style={styles.closeButtonText}>Close</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
-
+            <TouchableOpacity
+              style={styles.applyButton}
+              onPress={() => {
+                applyFilters(data); // Apply filters with current data
+                toggleModal();
+              }}>
+              <Text style={styles.applyButtonText}>Apply Filter</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -503,7 +500,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
 });
-
-
 
 export default Market;

@@ -2,8 +2,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 
 const Auction = ({navigation,route}) => {
-  const userId = route.params.userId;
-  const username = route.params.username
+  const userId = route.params.user.id;
+  const username = route.params.user.firstname;
+  // console.log(userId)
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.displayCard} onPress={()=>navigation.navigate('auctionBuy',{userId,username})}><Text style={styles.text}>Buy Commodities</Text></TouchableOpacity>

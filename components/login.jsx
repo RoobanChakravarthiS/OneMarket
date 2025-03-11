@@ -1,13 +1,17 @@
-import React from "react";
-import { ImageBackground, TouchableHighlight } from "react-native";
-import { Text, View, TextInput, StyleSheet, Platform } from "react-native";
-import { useForm, Controller } from 'react-hook-form';
+import React from 'react';
+import {ImageBackground, TouchableHighlight} from 'react-native';
+import {Text, View, TextInput, StyleSheet, Platform} from 'react-native';
+import {useForm, Controller} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useState,useEffect } from "react";
-import { NetworkInfo } from 'react-native-network-info';
+import {useState, useEffect} from 'react';
+import {NetworkInfo} from 'react-native-network-info';
 
-const Login = ({ navigation }) => {
-  const { control, handleSubmit, formState: { errors } } = useForm();
+const Login = ({navigation}) => {
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm();
   // const [userId,setUserId] = useState(null)
   const handlePressIn = () => {
     setIsPressed(true);
@@ -27,61 +31,58 @@ const Login = ({ navigation }) => {
   //   });
   // }, []);
 
-  const onSubmit = async (data) => {
-    
+  const onSubmit = async data => {
+    console.log(data);
     try {
-      const response = await fetch(`http://192.168.220.154:1111/login`, {
+      const response = await fetch(`http://192.168.23.154:1102/farmer/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
-  
+
       if (response.status === 401) {
         alert('Invalid username or password');
         return;
       }
-  
+
       if (response.status === 500) {
-        throw new Error("Error: " + response.statusText);
+        throw new Error('Error: ' + response.statusText);
       }
-  
+
       const responseData = await response.json();
-  
-      if (responseData.token) {
-        await AsyncStorage.setItem('token', responseData.token);
-        console.log(responseData.userid)
+
+      if (responseData) {
+        await AsyncStorage.setItem('userid', responseData.id);
+        console.log(responseData.id);
         // setUserId(responseData.userid)
-        const userId = responseData.userid
-        const username = responseData.username
+        const userId = responseData.id;
+        const username = responseData.username;
         console.log(userId);
-        navigation.navigate('Main',{userId,username});
+        navigation.navigate('UserDecision', {responseData});
       }
     } catch (error) {
       console.error('Login error:', error);
-    
-  }
+    }
   };
-  
 
   const backgroundImage = require('./bg.jpg');
   const [isPressed, setIsPressed] = React.useState(false);
 
   return (
-    <ImageBackground 
-      source={backgroundImage} 
+    <ImageBackground
+      source={backgroundImage}
       style={styles.backgroundImage}
-      blurRadius={10}
-    >
+      blurRadius={10}>
       <View style={styles.container}>
         <View style={styles.formContainer}>
           <View>
             <Controller
               control={control}
               name="username"
-              rules={{ required: 'Username is required' }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              rules={{required: 'Username is required'}}
+              render={({field: {onChange, onBlur, value}}) => (
                 <TextInput
                   style={[styles.input, errors.username && styles.inputError]}
                   onBlur={onBlur}
@@ -92,15 +93,17 @@ const Login = ({ navigation }) => {
                 />
               )}
             />
-            {errors.username && <Text style={styles.errorText}>{errors.username.message}</Text>}
+            {errors.username && (
+              <Text style={styles.errorText}>{errors.username.message}</Text>
+            )}
           </View>
 
           <View>
             <Controller
               control={control}
               name="password"
-              rules={{ required: 'Password is required' }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              rules={{required: 'Password is required'}}
+              render={({field: {onChange, onBlur, value}}) => (
                 <TextInput
                   style={[styles.input, errors.password && styles.inputError]}
                   onBlur={onBlur}
@@ -112,21 +115,32 @@ const Login = ({ navigation }) => {
                 />
               )}
             />
-            {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
+            {errors.password && (
+              <Text style={styles.errorText}>{errors.password.message}</Text>
+            )}
           </View>
 
           <TouchableHighlight
             style={styles.button}
-            underlayColor="#45c52a" 
-            onPressIn={handlePressIn} 
+            underlayColor="#45c52a"
+            onPressIn={handlePressIn}
             onPressOut={handlePressOut}
-            onPress={handleSubmit(onSubmit)}
-          >
-            <Text style={[styles.buttonText, { color: isPressed ? 'black' : 'white' }]}>LOGIN</Text>
+            onPress={handleSubmit(onSubmit)}>
+            <Text
+              style={[
+                styles.buttonText,
+                {color: isPressed ? 'black' : 'white'},
+              ]}>
+              LOGIN
+            </Text>
           </TouchableHighlight>
           <View style={styles.signIn}>
             <Text>Forgot Password</Text>
-            <Text onPress={() => navigation.navigate('Signup')} style={{color:'#000000'}}>New user?? sign UP</Text>
+            <Text
+              onPress={() => navigation.navigate('Signup')}
+              style={{color: '#000000'}}>
+              New user?? sign UP
+            </Text>
           </View>
         </View>
       </View>
@@ -139,7 +153,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: "100%",
+    width: '100%',
   },
   formContainer: {
     width: '80%',
@@ -147,7 +161,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.8,
     shadowRadius: 4,
     elevation: 5,
@@ -158,7 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     borderRadius: 16,
     backgroundColor: '#F1F1F1',
-    color:'#000000',
+    color: '#000000',
     marginBottom: 16,
     fontFamily: Platform.select({
       ios: 'System', // Default system font on iOS
@@ -195,7 +209,7 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     resizeMode: 'cover',
-    width: "100%"
+    width: '100%',
   },
   signIn: {
     display: 'flex',
@@ -207,7 +221,7 @@ const styles = StyleSheet.create({
       android: 'sans-serif', // Default system font on Android
     }),
     fontStyle: 'italic',
-  }
+  },
 });
 
 export default Login;

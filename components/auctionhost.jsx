@@ -12,6 +12,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {Client} from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 
 const HostAuction = ({navigation, route}) => {
   const [auctionName, setAuctionName] = useState('');
@@ -21,17 +23,22 @@ const HostAuction = ({navigation, route}) => {
   const [description, setDescription] = useState('');
   const [properties, setProperties] = useState('');
   const [auctionStarted, setAuctionStarted] = useState(false);
-  const [highestBid, setHighestBid] = useState(null);
+  const [highestBid, setHighestBid] = useState(Number(startingBid)); // Initialize with starting bid
   const [isAuctionEnded, setIsAuctionEnded] = useState(false);
   const [minutes, setMinutes] = useState(5);
   const [seconds, setSeconds] = useState(0);
   const [showImageConfirmation, setShowImageConfirmation] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState(null);
   const [confirm, setConfirm] = useState(false);
+  const [stompClient, setStompClient] = useState(null);
+  const [auctionId, setAuctionId] = useState(null);
+  const [topBidder, setTopBidder] = useState(null);
+  const [bidAmount, setBidAmount] = useState('');
   const username = route.params.username;
   const userId = route.params.userId;
   const data = route.params.item;
-  //   console.log(data);
+
+  // Timer logic
   useEffect(() => {
     if (auctionStarted && (minutes > 0 || seconds > 0)) {
       const timerInterval = setInterval(() => {
@@ -48,6 +55,77 @@ const HostAuction = ({navigation, route}) => {
     }
   }, [minutes, seconds, auctionStarted]);
 
+  // WebSocket connection logic
+  useEffect(() => {
+    if (!auctionId) return; // Only connect if auctionId is available
+
+    const socket = new SockJS('http://192.168.23.154:1102/ws');
+    const client = new Client({
+      webSocketFactory: () => socket,
+      reconnectDelay: 5000,
+      debug: str => console.log(str),
+    });
+
+    client.onConnect = () => {
+      console.log('Connected to WebSocket');
+      setStompClient(client);
+
+      // Subscribe to the auction topic
+      client.subscribe(`/all/responses/${auctionId}`, message => {
+        const bid = JSON.parse(message.body);
+        console.log('Received bid:', bid);
+
+        // Update the UI with the latest bid
+        setHighestBid(bid.amount);
+        setTopBidder(bid.bidder);
+      });
+    };
+
+    client.onStompError = frame => {
+      console.error('STOMP error:', frame.headers.message);
+      Alert.alert(
+        'Error',
+        'Failed to connect to the auction. Please try again.',
+      );
+    };
+
+    client.activate();
+
+    // Cleanup on component unmount
+    return () => {
+      if (client) {
+        client.deactivate();
+      }
+    };
+  }, [auctionId]);
+
+  // Function to place a bid
+  const placeBid = () => {
+    if (!stompClient || !bidAmount) {
+      Alert.alert('Error', 'Please enter a valid bid amount.');
+      return;
+    }
+
+    const bid = parseFloat(bidAmount);
+    if (bid <= highestBid) {
+      Alert.alert(
+        'Error',
+        'Your bid must be higher than the current highest bid.',
+      );
+      return;
+    }
+
+    // Send the bid to the server
+    stompClient.publish({
+      destination: `/app/join/${auctionId}`,
+      body: JSON.stringify({amount: bid, bidder: username}),
+    });
+
+    // Clear the bid input
+    setBidAmount('');
+  };
+
+  // Function to start the auction
   const startAuction = async () => {
     if (
       !auctionName ||
@@ -59,19 +137,22 @@ const HostAuction = ({navigation, route}) => {
       Alert.alert('Error', 'Please ensure all fields are filled.');
       return;
     }
-    setAuctionStarted(true);
+
     const formData = new FormData();
     formData.append(
       'data',
       JSON.stringify({
-        userid: userId,
+        farmer: {id: userId},
         auction_name: auctionName,
         starting_bid: startingBid,
-        quantity: quantity,
+        quantity_available: quantity,
         description: description,
         properties: properties,
+        top_bid: startingBid,
       }),
     );
+
+    console.log(formData);
 
     if (itemImage) {
       const imageName = itemImage.split('/').pop();
@@ -84,58 +165,38 @@ const HostAuction = ({navigation, route}) => {
     }
 
     try {
-      console.log('Sending formData:', formData); // Log FormData for debugging
-
       const response = await fetch(
-        'http://192.168.220.154:1111/createauctionhouse',
+        'http://192.168.23.154:1102/auctions/create',
         {
           method: 'POST',
           body: formData,
         },
       );
 
-      if (response.status === 201) {
-        setIsAuctionEnded(false);
-        // Alert.alert('Success', 'Auction hosted successfully!');
-        navigate.goBack()
+      if (response.ok) {
+        const responseData = await response.json();
+        setAuctionId(responseData.auctionId);
+        setAuctionStarted(true);
+        setHighestBid(Number(startingBid)); // Initialize highest bid
+        Alert.alert('Success', 'Auction hosted successfully!');
       } else {
         const errorText = await response.text();
-        console.log('Response error:', errorText);
         Alert.alert('Error', `Failed to host auction: ${errorText}`);
       }
     } catch (error) {
-      // console.error('API Error:', error.message);8
-      // Alert.alert('Error', 'An error occurred while hosting the auction.');
+      console.error('API Error:', error.message);
+      Alert.alert('Error', 'An error occurred while hosting the auction.');
     }
   };
 
+  // Function to end the auction
   const endAuction = () => {
     setIsAuctionEnded(true);
     setAuctionStarted(false);
-    // Alert.alert('Auction Ended', `The auction has ended. The highest bid was ₹${highestBid}.`);
+    if (stompClient) {
+      stompClient.deactivate(); // Disconnect WebSocket
+    }
   };
-
-  // const renderProgressBar = () => {
-  //   const starting = Number(startingBid);
-  //   const highest = Number(highestBid);
-
-  //   if (starting && highest && starting > 0) {
-  //     const progress = Math.min((highest - starting) / starting, 1);
-  //     return (
-  //       <View style={styles.progressContainer}>
-  //         <Text style={styles.progressText}>
-  //           Progress: {Math.round(progress * 100)}%
-  //         </Text>
-  //         <ActivityIndicator
-  //           size="large"
-  //           color="#4caf50"
-  //           style={styles.activityIndicator}
-  //         />
-  //       </View>
-  //     );
-  //   }
-  //   return null;
-  // };
 
   const handleImagePicker = () => {
     launchImageLibrary({mediaType: 'photo', quality: 1}, response => {

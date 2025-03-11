@@ -9,6 +9,7 @@ import {
   Image,
 } from 'react-native';
 import Login from './components/login';
+import Backarrow from './components/back-arrow.png';
 import Signup from './components/signup';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
@@ -25,6 +26,22 @@ import notification from './components/notification.png';
 import Payment from './components/Paymentpage';
 import Negotiation from './components/Negotiation';
 import StartAuction from './components/StartAuction';
+import Market from './components/userMarket';
+import InsuranceClaim from './components/Insurance';
+import PlantDiseaseDetection from './components/CropDoctor';
+import OnboardingScreen1 from './components/Screen1';
+import OnboardingScreen2 from './components/Screen2';
+import OnboardingScreen3 from './components/Screen3';
+import Decisionpage from './components/Decisionpage';
+import EquipmentRental from './components/Rental';
+import NegotiationChatScreen from './components/NegotiationChat';
+import NegotiationListScreen from './components/NegotiationList';
+import CropInvestmentForm from './components/Createshares';
+import PaymentDone from './components/donePage';
+import Filldetails from './components/Filldetails';
+import AddRental from './components/AddRental';
+import ShareListingScreen from './components/ShareList';
+import ContractListScreen from './components/ContractListScreen';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -46,6 +63,112 @@ const App = () => {
           name="Main"
           component={Footer}
         />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="insurance"
+          component={InsuranceClaim}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="shareslist"
+          component={ShareListingScreen}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="contractlist"
+          component={ContractListScreen}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="FertilizerMarket"
+          component={FertilizerMarket}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="addproducts"
+          component={Addproducts}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="CropDoctor"
+          component={PlantDiseaseDetection}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="AddRental"
+          component={AddRental}
+        />
+        <Stack.Screen 
+        name="PaymentDone" 
+        component={PaymentDone}
+        options={({ navigation }) => ({
+          headerShown: false,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerButton}>
+              <Image source={Backarrow} style={styles.headerImage} />
+            </TouchableOpacity>
+          ),
+          headerStyle: styles.headerStyle,
+          headerTitle: 'User Market',
+          headerTitleAlign: 'center',
+        })}
+      />
+      <Stack.Screen 
+        name="fillDetails" 
+        component={Filldetails}
+        options={({ navigation }) => ({
+          headerShown: false,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerButton}>
+              <Image source={Backarrow} style={styles.headerImage} />
+            </TouchableOpacity>
+          ),
+          headerStyle: styles.headerStyle,
+          headerTitle: 'User Market',
+          headerTitleAlign: 'center',
+        })}
+      />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="market"
+          component={Market}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="rental"
+          component={EquipmentRental}
+        />
+        <Stack.Screen name="NegotiationList" component={NegotiationListScreen} options={{ title: "Negotiations" }} />
+        <Stack.Screen
+          name="NegotiationChat"
+          component={NegotiationChatScreen}
+          options={({ route }) => ({ title: route.params.negotiation.user })}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="Onboarding1"
+          component={OnboardingScreen1}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="shares"
+          component={CropInvestmentForm}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="Onboarding2"
+          component={OnboardingScreen2}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="Onboarding3"
+          component={OnboardingScreen3}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="UserDecision"
+          component={Decisionpage}
+        />
 
         <Stack.Screen
           options={({navigation}) => ({
@@ -61,14 +184,14 @@ const App = () => {
                 <Image source={msgImg} style={styles.imagetop} />
               </TouchableOpacity> */}
                 <TouchableOpacity
-                  onPress={() => console.log('Weather Pressed')}>
+                  onPress={() => navigation.navigate('NegotiationList')}>
                   <Image source={notification} style={styles.imagetop} />
                 </TouchableOpacity>
               </View>
             ),
             // headerLeft: () => (
             //   <TouchableOpacity
-            //     onPress={() => console.log('Profile Pressed')}
+            //     onPress={() => navigation.navigate('NegotiationList')}
             //     style={{marginLeft: 10}}></TouchableOpacity>
             // ),
           })}
@@ -89,14 +212,14 @@ const App = () => {
                 <Image source={msgImg} style={styles.imagetop} />
               </TouchableOpacity> */}
                 <TouchableOpacity
-                  onPress={() => console.log('Weather Pressed')}>
+                  onPress={() => navigation.navigate('NegotiationList')}>
                   <Image source={notification} style={styles.imagetop} />
                 </TouchableOpacity>
               </View>
             ),
             // headerLeft: () => (
             //   <TouchableOpacity
-            //     onPress={() => console.log('Profile Pressed')}
+            //     onPress={() => navigation.navigate('NegotiationList')}
             //     style={{marginLeft: 10}}></TouchableOpacity>
             // ),
           })}
@@ -117,14 +240,14 @@ const App = () => {
                 <Image source={msgImg} style={styles.imagetop} />
               </TouchableOpacity> */}
                 <TouchableOpacity
-                  onPress={() => console.log('Weather Pressed')}>
+                  onPress={() => navigation.navigate('NegotiationList')}>
                   <Image source={notification} style={styles.imagetop} />
                 </TouchableOpacity>
               </View>
             ),
             // headerLeft: () => (
             //   <TouchableOpacity
-            //     onPress={() => console.log('Profile Pressed')}
+            //     onPress={() => navigation.navigate('NegotiationList')}
             //     style={{marginLeft: 10}}></TouchableOpacity>
             // ),
           })}
@@ -145,14 +268,14 @@ const App = () => {
                 <Image source={msgImg} style={styles.imagetop} />
               </TouchableOpacity> */}
                 <TouchableOpacity
-                  onPress={() => console.log('Weather Pressed')}>
+                  onPress={() => navigation.navigate('NegotiationList')}>
                   <Image source={notification} style={styles.imagetop} />
                 </TouchableOpacity>
               </View>
             ),
             headerLeft: () => (
               <TouchableOpacity
-                onPress={() => console.log('Profile Pressed')}
+                onPress={() => navigation.navigate('NegotiationList')}
                 style={{marginLeft: 10}}></TouchableOpacity>
             ),
           })}
@@ -173,14 +296,14 @@ const App = () => {
                 <Image source={msgImg} style={styles.imagetop} />
               </TouchableOpacity> */}
                 <TouchableOpacity
-                  onPress={() => console.log('Weather Pressed')}>
+                  onPress={() => navigation.navigate('NegotiationList')}>
                   <Image source={notification} style={styles.imagetop} />
                 </TouchableOpacity>
               </View>
             ),
             headerLeft: () => (
               <TouchableOpacity
-                onPress={() => console.log('Profile Pressed')}
+                onPress={() => navigation.navigate('NegotiationList')}
                 style={{marginLeft: 10}}></TouchableOpacity>
             ),
           })}
@@ -201,14 +324,14 @@ const App = () => {
                 <Image source={msgImg} style={styles.imagetop} />
               </TouchableOpacity> */}
                 <TouchableOpacity
-                  onPress={() => console.log('Weather Pressed')}>
+                  onPress={() => navigation.navigate('NegotiationList')}>
                   <Image source={notification} style={styles.imagetop} />
                 </TouchableOpacity>
               </View>
             ),
             headerLeft: () => (
               <TouchableOpacity
-                onPress={() => console.log('Profile Pressed')}
+                onPress={() => navigation.navigate('NegotiationList')}
                 style={{marginLeft: 10}}></TouchableOpacity>
             ),
           })}
@@ -229,14 +352,14 @@ const App = () => {
                 <Image source={msgImg} style={styles.imagetop} />
               </TouchableOpacity> */}
                 <TouchableOpacity
-                  onPress={() => console.log('Weather Pressed')}>
+                  onPress={() => navigation.navigate('NegotiationList')}>
                   <Image source={notification} style={styles.imagetop} />
                 </TouchableOpacity>
               </View>
             ),
             headerLeft: () => (
               <TouchableOpacity
-                onPress={() => console.log('Profile Pressed')}
+                onPress={() => navigation.navigate('NegotiationList')}
                 style={{marginLeft: 10}}></TouchableOpacity>
             ),
           })}
@@ -257,14 +380,14 @@ const App = () => {
                 <Image source={msgImg} style={styles.imagetop} />
               </TouchableOpacity> */}
                 <TouchableOpacity
-                  onPress={() => console.log('Weather Pressed')}>
+                  onPress={() => navigation.navigate('NegotiationList')}>
                   <Image source={notification} style={styles.imagetop} />
                 </TouchableOpacity>
               </View>
             ),
             headerLeft: () => (
               <TouchableOpacity
-                onPress={() => console.log('Profile Pressed')}
+                onPress={() => navigation.navigate('NegotiationList')}
                 style={{marginLeft: 10}}></TouchableOpacity>
             ),
           })}
@@ -285,14 +408,14 @@ const App = () => {
                 <Image source={msgImg} style={styles.imagetop} />
               </TouchableOpacity> */}
                 <TouchableOpacity
-                  onPress={() => console.log('Weather Pressed')}>
+                  onPress={() => navigation.navigate('NegotiationList')}>
                   <Image source={notification} style={styles.imagetop} />
                 </TouchableOpacity>
               </View>
             ),
             headerLeft: () => (
               <TouchableOpacity
-                onPress={() => console.log('Profile Pressed')}
+                onPress={() => navigation.navigate('NegotiationList')}
                 style={{marginLeft: 10}}></TouchableOpacity>
             ),
           })}
@@ -313,14 +436,14 @@ const App = () => {
                 <Image source={msgImg} style={styles.imagetop} />
               </TouchableOpacity> */}
                 <TouchableOpacity
-                  onPress={() => console.log('Weather Pressed')}>
+                  onPress={() => navigation.navigate('NegotiationList')}>
                   <Image source={notification} style={styles.imagetop} />
                 </TouchableOpacity>
               </View>
             ),
             headerLeft: () => (
               <TouchableOpacity
-                onPress={() => console.log('Profile Pressed')}
+                onPress={() => navigation.navigate('NegotiationList')}
                 style={{marginLeft: 10}}></TouchableOpacity>
             ),
           })}

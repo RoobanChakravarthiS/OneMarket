@@ -1,8 +1,18 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import fertiimages from './fertilizerimg'; // Assuming this contains your images
 import LottieView from 'lottie-react-native';
-const FertilizerMarket = ({route}) => {
+
+import fertilizerdata from './fertilizers.json';
+const FertilizerMarket = ({route, navigation}) => {
   const [fertilizers, setFertilizers] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [numColumns, setNumColumns] = useState(2);
@@ -11,7 +21,7 @@ const FertilizerMarket = ({route}) => {
     // Fetch data from the backend API
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.220.154:1111/getfertimart'); // Replace with your server's URL
+        const response = await fetch('http://192.168.23.154:1102/getfertimart'); // Replace with your server's URL
         if (response.ok) {
           const data = await response.json();
           setFertilizers(data);
@@ -25,10 +35,13 @@ const FertilizerMarket = ({route}) => {
       }
     };
 
-    fetchData();
+    setFertilizers(fertilizerdata);
   }, []);
+  setTimeout(() => {
+    setLoading(false);
+  }, 2000);
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <View key={item.id} style={styles.displayCard}>
         <Image source={fertiimages[item.id]} style={styles.image} />
@@ -37,7 +50,9 @@ const FertilizerMarket = ({route}) => {
           <Text style={styles.price}>${item.price}</Text>
           <Text style={styles.description}>{item.description}</Text>
         </View>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('PaymentDone')}>
           <Text style={styles.buttonText}>Order Now</Text>
         </TouchableOpacity>
       </View>
@@ -47,14 +62,14 @@ const FertilizerMarket = ({route}) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-          <LottieView
-            source={require('./farmer.json')} // replace with your Lottie file path
-            autoPlay
-            loop={false}
-            style={styles.animation}
-          />
-          <Text style={styles.text}>Loading...</Text>
-        </View>
+        <LottieView
+          source={require('./farmer.json')} // replace with your Lottie file path
+          autoPlay
+          loop={false}
+          style={styles.animation}
+        />
+        <Text style={styles.text}>Loading...</Text>
+      </View>
     );
   }
 
@@ -63,7 +78,7 @@ const FertilizerMarket = ({route}) => {
       <FlatList
         data={fertilizers}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         key={numColumns}
         numColumns={numColumns}
         contentContainerStyle={styles.listContent}
@@ -89,7 +104,7 @@ const styles = StyleSheet.create({
   },
   animation: {
     width: 400,
-    height:400,
+    height: 400,
   },
   listContent: {
     paddingBottom: 20,
@@ -109,7 +124,7 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0', // Light border color for card edges
     borderWidth: 1,
     shadowColor: '#00000030',
-    shadowOffset: { width: 0, height: 5 },
+    shadowOffset: {width: 0, height: 5},
     shadowOpacity: 0.2,
     shadowRadius: 8,
   },
@@ -149,7 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     shadowColor: '#00000030',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: {width: 0, height: 3},
     shadowOpacity: 0.2,
     shadowRadius: 6,
   },

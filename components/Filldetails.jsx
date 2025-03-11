@@ -1,71 +1,81 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, ScrollView, Modal } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Picker } from '@react-native-picker/picker';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  Modal,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Picker} from '@react-native-picker/picker';
 import pics from './pics';
 
-const Filldetails = ({ route, navigation }) => {
+const Filldetails = ({route, navigation}) => {
   const data = route.params;
-  const [suggest,setSuggest] = useState(false);
-  const [value,setValue] = useState(null)
+  const [suggest, setSuggest] = useState(false);
+  const [value, setValue] = useState(null);
   const commodity = data.item.name;
   const capCommodity = commodity.charAt(0).toUpperCase() + commodity.slice(1);
-  // console.log(data.userId+"hi")
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://6811-65-2-93-96.ngrok-free.app/search', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
+        const response = await fetch(
+          'https://f71d-43-250-42-50.ngrok-free.app/search',
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              Commodity: capCommodity,
+            }),
           },
-          body: JSON.stringify({
-            "Commodity": capCommodity,
-          }),
-        });
-  
+        );
+
         // Check if the response status is OK
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-  
+
         // Convert the response to JSON
         const data = await response.json();
-        console.log(data["Modal Price"]); // Log the response data
-        setValue(data["Modal Price"]);
+        console.log(data['Modal Price']); // Log the response data
+        setValue(data['Modal Price']);
       } catch (err) {
         console.log(err.message); // Log any error messages
-      }
-      finally{
+      } finally {
         setSuggest(true);
       }
     };
-  
     fetchData(); // Call the async function
-  }, [capCommodity]); // Include `capCommodity` as a dependency if it changes
-  
+  }, [capCommodity]);
+
   const [details, setDetails] = useState({
+    cropid: data?.item.id,
     bulk: false,
     retail: false,
-    userid:data.userId,
-    cropname: data?.item.name || '',  // Fallback in case data.name is undefined
-    cropid: data?.item.id || '',      // Fallback in case data.id is undefined
-    // image: data?.image || '',// Fallback in case data.image is undefined
+    userid: data.userId,
+    crop: data?.item.name || '', // Fallback in case data.name is undefined
+    id: data?.item.id || '', // Fallback in case data.id is undefined
     price: '',
     quantity: '',
     negotiable: true,
-    duration: '1 Week',      // Setting an initial value for duration
+    duration: '1 Week', // Setting an initial value for duration
   });
 
-  const handlePress = (type) => {
-    setDetails((prevDetails) => ({
+  const handlePress = type => {
+    setDetails(prevDetails => ({
       ...prevDetails,
       [type]: !prevDetails[type],
     }));
   };
 
   const handleNegotiation = () => {
-    setDetails((prevDetails) => ({
+    setDetails(prevDetails => ({
       ...prevDetails,
       negotiable: !prevDetails.negotiable,
     }));
@@ -73,28 +83,49 @@ const Filldetails = ({ route, navigation }) => {
 
   const handlesubmit = () => {
     if (details.price === '' || details.quantity === '') {
-      alert('Enter all details');
-    } else {
-      fetch(`http://192.168.220.154:1111/addmarkethub`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(details),
-      })
-        .then((response) => {if (response.status === 201) {
-          // alert('Product added successfully');
-          navigation.navigate('PaymentDone');  // Navigate only after successful submission
+      alert('Please fill all fields.');
+      return; // Exit early if validation fails
+    }
+
+    // Additional validation for numeric input
+    if (isNaN(details.price) || isNaN(details.quantity)) {
+      alert('Price and Quantity must be numeric');
+      return;
+    }
+
+    const productData = {
+      userid: details.userid,
+      farmer: {id: details.userid},
+      crop: details.crop,
+      id: details.id,
+      price: details.price,
+      quantity: details.quantity,
+      negotiable: details.negotiable,
+      duration: details.duration,
+      retail: details.retail,
+      bulk: details.bulk,
+    };
+
+    console.log(productData);
+
+    fetch(`http://192.168.23.154:1102/products/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(productData), // Send the updated product data
+    })
+      .then(response => {
+        if (response.status === 200) {
+          navigation.navigate('PaymentDone');
         } else {
           alert('Failed to add product');
-        }})
- 
-        
-        .catch((error) => {
-          console.error('Error:', error);
-          alert('An error occurred. Please try again.'); // Better error handling
-        });
-    }
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+      });
   };
 
   return (
@@ -108,15 +139,23 @@ const Filldetails = ({ route, navigation }) => {
           <View style={styles.selectors}>
             <TouchableOpacity
               style={details.retail ? styles.selected : styles.unselected}
-              onPress={() => handlePress('retail')}
-            >
-              <Text style={details.retail ? styles.selectedButtonText : styles.buttonText}>RETAIL</Text>
+              onPress={() => handlePress('retail')}>
+              <Text
+                style={
+                  details.retail ? styles.selectedButtonText : styles.buttonText
+                }>
+                RETAIL
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={details.bulk ? styles.selected : styles.unselected}
-              onPress={() => handlePress('bulk')}
-            >
-              <Text style={details.bulk ? styles.selectedButtonText : styles.buttonText}>BULK</Text>
+              onPress={() => handlePress('bulk')}>
+              <Text
+                style={
+                  details.bulk ? styles.selectedButtonText : styles.buttonText
+                }>
+                BULK
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -125,7 +164,7 @@ const Filldetails = ({ route, navigation }) => {
             placeholder="Enter Price"
             keyboardType="numeric"
             value={details.price}
-            onChangeText={(value) => setDetails({ ...details, price: value })}
+            onChangeText={value => setDetails({...details, price: value})}
             placeholderTextColor="#888"
           />
 
@@ -134,7 +173,7 @@ const Filldetails = ({ route, navigation }) => {
             placeholder="Enter Quantity"
             keyboardType="numeric"
             value={details.quantity}
-            onChangeText={(value) => setDetails({ ...details, quantity: value })}
+            onChangeText={value => setDetails({...details, quantity: value})}
             placeholderTextColor="#888"
           />
         </View>
@@ -143,15 +182,27 @@ const Filldetails = ({ route, navigation }) => {
           <View style={styles.selectors}>
             <TouchableOpacity
               style={details.negotiable ? styles.unselected : styles.selected}
-              onPress={handleNegotiation}
-            >
-              <Text style={details.negotiable ? styles.buttonText : styles.selectedButtonText}>Yes</Text>
+              onPress={handleNegotiation}>
+              <Text
+                style={
+                  details.negotiable
+                    ? styles.buttonText
+                    : styles.selectedButtonText
+                }>
+                Yes
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={details.negotiable ? styles.selected : styles.unselected}
-              onPress={handleNegotiation}
-            >
-              <Text style={details.negotiable ? styles.selectedButtonText : styles.buttonText}>No</Text>
+              onPress={handleNegotiation}>
+              <Text
+                style={
+                  details.negotiable
+                    ? styles.selectedButtonText
+                    : styles.buttonText
+                }>
+                No
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -160,8 +211,9 @@ const Filldetails = ({ route, navigation }) => {
             <Picker
               selectedValue={details.duration}
               style={styles.picker}
-              onValueChange={(itemValue) => setDetails({ ...details, duration: itemValue })}
-            >
+              onValueChange={itemValue =>
+                setDetails({...details, duration: itemValue})
+              }>
               <Picker.Item label="1 Week" value="1 Week" />
               <Picker.Item label="10 Days" value="10 Days" />
               <Picker.Item label="20 Days" value="20 Days" />
@@ -177,33 +229,20 @@ const Filldetails = ({ route, navigation }) => {
         animationType="slide"
         transparent={true}
         visible={suggest}
-        onRequestClose={() => setSuggest(false)}
-      >
+        onRequestClose={() => setSuggest(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Suggested Price:</Text>
-            <Text style={styles.modalMessage}>
-            ₹{value/100} per KG
-            </Text>
-            {/* <TouchableOpacity
-              style={styles.confirmButton}
-              // onPress={confirmBid}
-              onPress={()=>navigation.goBack()
-              }
-            >
-              <Text style={styles.confirmButtonText}>Exit</Text>
-            </TouchableOpacity> */}
+            <Text style={styles.modalMessage}>₹{value / 100} per KG</Text>
             <TouchableOpacity
               style={styles.cancelButton}
-              onPress={() => setSuggest(false)}
-            >
+              onPress={() => setSuggest(false)}>
               <Text style={styles.cancelButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
     </ScrollView>
-    
   );
 };
 
@@ -266,8 +305,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    
-    
   },
   submit: {
     backgroundColor: '#029429',
@@ -276,8 +313,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    
-    
   },
   buttonText: {
     color: '#029429', // Default button text color
@@ -305,7 +340,7 @@ const styles = StyleSheet.create({
     borderColor: '#029429',
     borderWidth: 2,
     paddingHorizontal: 15,
-    color:'#029429',
+    color: '#029429',
     fontSize: 16,
     marginVertical: 10,
   },
@@ -330,50 +365,50 @@ const styles = StyleSheet.create({
     color: '#029429',
   },
   modalOverlay: {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark overlay for better focus on the modal
-},
-modalContent: {
-  width: '90%',
-  maxWidth: 400,
-  backgroundColor: '#ffffff',
-  borderRadius: 15,
-  padding: 20,
-  elevation: 10,
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.3,
-  shadowRadius: 6,
-},
-modalTitle: {
-  fontSize: 20,
-  fontWeight: 'bold',
-  color: '#333333',
-  marginBottom: 15,
-  textAlign: 'center',
-},
-modalBody: {
-  fontSize: 16,
-  color: '#555555',
-  textAlign: 'center',
-  marginBottom: 20,
-},
-modalCloseButton: {
-  backgroundColor: '#FF6347', // Tomato color for the close button
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  borderRadius: 10,
-  alignSelf: 'center',
-},
-modalCloseButtonText: {
-  color: '#ffffff',
-  fontSize: 16,
-  fontWeight: 'bold',
-  textAlign: 'center',
-},
-modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark overlay for better focus on the modal
+  },
+  modalContent: {
+    width: '90%',
+    maxWidth: 400,
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    padding: 20,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalBody: {
+    fontSize: 16,
+    color: '#555555',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalCloseButton: {
+    backgroundColor: '#FF6347', // Tomato color for the close button
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignSelf: 'center',
+  },
+  modalCloseButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -386,7 +421,7 @@ modalOverlay: {
     padding: 25,
     elevation: 15,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
+    shadowOffset: {width: 0, height: 5},
     shadowOpacity: 0.3,
     shadowRadius: 10,
   },
@@ -426,5 +461,4 @@ modalOverlay: {
     fontSize: 18,
     fontWeight: '600',
   },
-
 });

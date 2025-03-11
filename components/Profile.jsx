@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -25,7 +25,7 @@ const Stocks = ({route}) => {
     state: 'California',
     pincode: '123456',
     imageUri: null,
-    age:28,
+    age: 28,
   };
 
   const [isEditable, setIsEditable] = useState(false);
@@ -37,14 +37,16 @@ const Stocks = ({route}) => {
       height: 300,
       cropping: true,
       cropperCircleOverlay: true, // To make the cropping area circular
-    }).then((image) => {
-      setUserDetails({
-        ...userDetails,
-        imageUri: image.path,
+    })
+      .then(image => {
+        setUserDetails({
+          ...userDetails,
+          imageUri: image.path,
+        });
+      })
+      .catch(error => {
+        console.log('ImagePicker Error: ', error);
       });
-    }).catch((error) => {
-      console.log('ImagePicker Error: ', error);
-    });
   };
 
   const handleInputChange = (name, value) => {
@@ -54,17 +56,18 @@ const Stocks = ({route}) => {
     });
   };
 
-  const handleSubmit = async () => {25
+  const handleSubmit = async () => {
+    25;
     console.log('Starting submission');
-    const { number, aadhar, pincode } = userDetails;
-    
+    const {number, aadhar, pincode} = userDetails;
+
     if (number.length < 10 || aadhar.length < 12 || pincode.length < 6) {
       Alert.alert('Error', 'Please ensure all fields are correctly filled.');
       return;
     }
-  
+
     const formData = new FormData();
-  
+
     // Add JSON data as a stringified object
     const jsonPayload = {
       userid: userId,
@@ -78,28 +81,31 @@ const Stocks = ({route}) => {
       state: userDetails.state,
       pin_code: userDetails.pincode,
     };
-  
+
     formData.append('data', JSON.stringify(jsonPayload));
-  
+
     // Add the image to formData if available
     if (userDetails.imageUri) {
       const imageName = userDetails.imageUri.split('/').pop();
       const imageType = `image/${imageName.split('.').pop()}`;
-  
+
       formData.append('photo', {
         uri: userDetails.imageUri,
         name: imageName,
         type: imageType,
       });
     }
-  
+
     try {
       console.log('Submitting form data:', formData);
-      const response = await fetch('http://192.168.220.154:1111/updateuserdetails', {
-        method: 'PUT',
-        body: formData,
-      });
-  
+      const response = await fetch(
+        'http://192.168.23.154:1102/updateuserdetails',
+        {
+          method: 'PUT',
+          body: formData,
+        },
+      );
+
       console.log('Response status:', response.status);
       if (response.status === 204) {
         Alert.alert('Success', 'Details updated successfully!');
@@ -113,10 +119,6 @@ const Stocks = ({route}) => {
       Alert.alert('Error', 'An error occurred while updating details.');
     }
   };
-  
-  
-  
-  
 
   return (
     <View style={styles.container}>
@@ -132,7 +134,10 @@ const Stocks = ({route}) => {
           </View>
           {/* Display uploaded image below the Name field in the uneditable view */}
           {!isEditable && userDetails.imageUri && (
-            <Image source={{ uri: userDetails.imageUri }} style={styles.profileImage} />
+            <Image
+              source={{uri: userDetails.imageUri}}
+              style={styles.profileImage}
+            />
           )}
         </View>
 
@@ -186,7 +191,7 @@ const Stocks = ({route}) => {
                   maxLength={10}
                   placeholder="Enter phone number"
                   value={userDetails.number}
-                  onChangeText={(value) => handleInputChange('number', value)}
+                  onChangeText={value => handleInputChange('number', value)}
                 />
               </View>
               <View style={styles.inputGroup}>
@@ -197,7 +202,7 @@ const Stocks = ({route}) => {
                   maxLength={2}
                   placeholder="Enter your age"
                   value={userDetails.age}
-                  onChangeText={(value) => handleInputChange('age', value)}
+                  onChangeText={value => handleInputChange('age', value)}
                 />
               </View>
               <View style={styles.inputGroup}>
@@ -208,10 +213,12 @@ const Stocks = ({route}) => {
                   maxLength={12}
                   placeholder="Enter Aadhar number"
                   value={userDetails.aadhar}
-                  onChangeText={(value) => handleInputChange('aadhar', value)}
+                  onChangeText={value => handleInputChange('aadhar', value)}
                 />
               </View>
-              <TouchableOpacity style={styles.imagePicker} onPress={handleImagePicker}>
+              <TouchableOpacity
+                style={styles.imagePicker}
+                onPress={handleImagePicker}>
                 <Text style={styles.imagePickerText}>Upload Profile Image</Text>
               </TouchableOpacity>
               <View style={styles.addressContainer}>
@@ -221,7 +228,7 @@ const Stocks = ({route}) => {
                     style={styles.input}
                     placeholder="Enter door number"
                     value={userDetails.doorNo}
-                    onChangeText={(value) => handleInputChange('doorNo', value)}
+                    onChangeText={value => handleInputChange('doorNo', value)}
                   />
                 </View>
                 <View style={styles.inputGroup}>
@@ -230,7 +237,7 @@ const Stocks = ({route}) => {
                     style={styles.input}
                     placeholder="Enter street"
                     value={userDetails.street}
-                    onChangeText={(value) => handleInputChange('street', value)}
+                    onChangeText={value => handleInputChange('street', value)}
                   />
                 </View>
                 <View style={styles.inputGroup}>
@@ -239,7 +246,7 @@ const Stocks = ({route}) => {
                     style={styles.input}
                     placeholder="Enter town"
                     value={userDetails.town}
-                    onChangeText={(value) => handleInputChange('town', value)}
+                    onChangeText={value => handleInputChange('town', value)}
                   />
                 </View>
                 <View style={styles.inputGroup}>
@@ -248,7 +255,7 @@ const Stocks = ({route}) => {
                     style={styles.input}
                     placeholder="Enter district"
                     value={userDetails.district}
-                    onChangeText={(value) => handleInputChange('district', value)}
+                    onChangeText={value => handleInputChange('district', value)}
                   />
                 </View>
                 <View style={styles.inputGroup}>
@@ -257,7 +264,7 @@ const Stocks = ({route}) => {
                     style={styles.input}
                     placeholder="Enter state"
                     value={userDetails.state}
-                    onChangeText={(value) => handleInputChange('state', value)}
+                    onChangeText={value => handleInputChange('state', value)}
                   />
                 </View>
                 <View style={styles.inputGroup}>
@@ -268,7 +275,7 @@ const Stocks = ({route}) => {
                     maxLength={6}
                     placeholder="Enter pincode"
                     value={userDetails.pincode}
-                    onChangeText={(value) => handleInputChange('pincode', value)}
+                    onChangeText={value => handleInputChange('pincode', value)}
                   />
                 </View>
               </View>
@@ -278,9 +285,10 @@ const Stocks = ({route}) => {
 
         <TouchableOpacity
           style={styles.editButton}
-          onPress={() => setIsEditable(!isEditable)}
-        >
-          <Text style={styles.editButtonText}>{isEditable ? 'Save' : 'Edit'}</Text>
+          onPress={() => setIsEditable(!isEditable)}>
+          <Text style={styles.editButtonText}>
+            {isEditable ? 'Save' : 'Edit'}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -340,14 +348,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
   },
   inputGroup: {
     marginBottom: 15,
-    gap:10,
+    gap: 10,
   },
   input: {
     height: 40,
@@ -396,7 +404,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,

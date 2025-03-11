@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,170 +7,241 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
+  Dimensions,
+  Platform,
+  Animated,
+  Easing,
 } from 'react-native';
-import pics from './pics';
+import {Client} from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import axios from 'axios';
+import image from './corn.jpg';
+const {width, height} = Dimensions.get('window');
 
-const AuctionRooms = ({ navigation, route }) => {
-  const [bid, setBid] = useState(5000); // Initial bid amount in rupees
+const AuctionRooms = ({navigation, route}) => {
+  const auctionData = route.params.auction; // JSON data passed from Roomlist
+  console.log('inga ' + auctionData);
+  const [bid, setBid] = useState(auctionData.starting_bid);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedBid, setSelectedBid] = useState(null);
-  const [alert ,setAlert] = useState(false);
-  const data = route.params.item;
-  const item = route.params.itemd;
-  console.log(data);
+  const [alert, setAlert] = useState(false);
+  const [minutes, setMinutes] = useState(5); // Changed to 5 minutes
+  const [seconds, setSeconds] = useState(0);
+  const [timerAnimation] = useState(new Animated.Value(1));
+  const [highestBidder, setHighestBidder] = useState(
+    auctionData.top_bidder || 'None',
+  );
+  const [stompClient, setStompClient] = useState(null);
+  const auctionId = auctionData.auctionId;
 
-  const placeBid = (amount) => {
+  const bidAmounts = [
+    Math.round(bid * 0.02),
+    Math.round(bid * 0.05),
+    Math.round(bid * 0.1),
+  ];
+
+  useEffect(() => {
+    let intervalId;
+
+    const receiveBid = async () => {
+      try {
+        const response = await axios.get(`http://192.168.23.154:1102/poll`);
+        if (response.data) {
+          const {bidAmount, bidderName} = response.data;
+          setBid(bidAmount);
+          setHighestBidder(bidderName);
+          setMinutes(1);
+          setSeconds(30);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    intervalId = setInterval(receiveBid, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const sendBid = async () => {
+    try {
+      const bidData = {
+        bidderName: 'Ravi Kumar', // Replace with actual user name
+        bidAmount: selectedBid,
+      };
+
+      const response = await axios.post(
+        `http://192.168.23.154:1102/send`,
+        bidData,
+      );
+
+      setBid(selectedBid);
+      setHighestBidder('Current User');
+
+      console.log(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  // Timer logic
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(timerAnimation, {
+          toValue: 1.1,
+          duration: 500,
+          easing: Easing.easeInOut,
+          useNativeDriver: true,
+        }),
+        Animated.timing(timerAnimation, {
+          toValue: 1,
+          duration: 500,
+          easing: Easing.easeInOut,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+
+    let timerInterval = setInterval(() => {
+      setSeconds(prevSeconds => {
+        if (prevSeconds > 0) return prevSeconds - 1;
+        if (minutes === 0) {
+          clearInterval(timerInterval);
+          setAlert(true);
+          return 0;
+        }
+        setMinutes(prevMinutes => prevMinutes - 1);
+        return 59;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(timerInterval);
+      timerAnimation.stopAnimation();
+    };
+  }, [minutes, seconds]);
+
+  const placeBid = amount => {
     setSelectedBid(amount);
     setModalVisible(true);
   };
 
   const confirmBid = () => {
+    sendBid();
     setBid(selectedBid);
     setMinutes(1);
     setSeconds(30);
     setModalVisible(false);
   };
 
-  const bidAmounts = [
-    Math.round(bid * 0.02), 
-    Math.round(bid * 0.05), 
-    Math.round(bid * 0.1), 
-  ];
-  const [minutes, setMinutes] = useState(0); 
-  const [seconds, setSeconds] = useState(10); 
-
-  useEffect(() => {
-    let timerInterval = setInterval(() => {
-      if (seconds > 0) {
-        setSeconds(seconds - 1);
-      } else if (seconds === 0) {
-        if (minutes === 0) {
-          clearInterval(timerInterval);
-          setAlert(true)
-        } else {
-          setMinutes(minutes - 1);
-          setSeconds(59);
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(timerInterval);
-  }, [minutes, seconds]);
-
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Timer Component */}
-      <View style={styles.timeComp}>
-        <Text style={styles.timerText}>
-          {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-        </Text>
-      </View>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Timer Component */}
+        <Animated.View
+          style={[styles.timeComp, {transform: [{scale: timerAnimation}]}]}>
+          <Text style={styles.timerText}>
+            {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+          </Text>
+        </Animated.View>
 
-      {/* Auction Item Details */}
-      <View style={styles.content}>
-        <View style={styles.item}>
-          <View style={styles.itemImage}>
-            <Image source={pics[item.id]} style={styles.image} />
-          </View>
-          <View style={styles.itemName}>
-            <Text style={styles.text}>{data.name}</Text>
-            <Text style={styles.properties} >proprties of commodity
-            </Text>
-          </View>
-        </View>
-
-        {/* Price Display */}
-        <View style={styles.priceDisplay}>
-          <View style={styles.startingBid}>
-            <Text style={styles.priceText}>Starting Bid: ₹{data.startingBid}</Text>
-          </View>
-          <View style={styles.currentBid}>
-            <View style={styles.bidAmount}>
-              <Text style={styles.priceText}>Current Bid: ₹{bid}</Text>
+        {/* Auction Item Details */}
+        <View style={styles.content}>
+          <View style={styles.item}>
+            <View style={styles.itemImage}>
+              <Image
+                source={image} // Fallback image
+                style={styles.image}
+                defaultSource={require('./doctor.png')} // Add fallback
+              />
             </View>
-            <View style={styles.highestBidder}>
-              <Text style={styles.priceText}>Highest Bidder: {data.highestBidder}</Text>
+            <View style={styles.itemName}>
+              <Text style={styles.text}>{auctionData.auction_name}</Text>
+              <Text style={styles.properties}>
+                {auctionData.description || 'Properties of commodity'}
+              </Text>
+              <Text style={styles.location}>
+                {/* <Icon name="location-on" size={16} color="#666" /> */}
+                {auctionData.farmer.location}
+              </Text>
             </View>
           </View>
-        </View>
 
-        {/* Bid Options */}
-        <View style={styles.bidOptions}>
-          {bidAmounts.map((increment, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.bidButton}
-              onPress={() => placeBid(bid + increment)}
-            >
-              <Text style={styles.bidButtonText}>Bid +₹{increment}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      {/* Confirmation Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Confirm Bid</Text>
-            <Text style={styles.modalMessage}>
-              Are you sure you want to place a bid of ₹{selectedBid}?
+          {/* Price Display */}
+          <View style={styles.priceDisplay}>
+            <Text style={styles.priceText}>
+              Starting Bid: ₹{auctionData.starting_bid}
             </Text>
-            <TouchableOpacity
-              style={styles.confirmButton}
-              onPress={confirmBid}
-            >
-              <Text style={styles.confirmButtonText}>Confirm</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
+            <Text style={styles.priceText}>Current Bid: ₹{bid}</Text>
+            <Text style={styles.priceText}>
+              Quantity: {auctionData.quantity_available} kg
+            </Text>
+            <Text style={styles.priceText}>
+              Highest Bidder: {highestBidder}
+            </Text>
+          </View>
+
+          {/* Bid Options */}
+          <View style={styles.bidOptions}>
+            {bidAmounts.map((increment, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.bidButton}
+                onPress={() => placeBid(bid + increment)}>
+                <Text style={styles.bidButtonText}>Bid +₹{increment}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
-      </Modal>
 
-
-      {/* this is the  start of the alerting the auction ended modal */}
-
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={alert}
-        onRequestClose={() => setAlert(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Auction has ended</Text>
-            <Text style={styles.modalMessage}>
-              this guy made the highest bid of  ₹{selectedBid}?
-            </Text>
-            <TouchableOpacity
-              style={styles.confirmButton}
-              // onPress={confirmBid}
-              onPress={()=>navigation.goBack()
-              }
-            >
-              <Text style={styles.confirmButtonText}>Exit</Text>
-            </TouchableOpacity>
-            {/* <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity> */}
+        {/* Bid Confirmation Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Confirm Bid</Text>
+              <Text style={styles.modalMessage}>
+                Are you sure you want to place a bid of ₹{selectedBid}?
+              </Text>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={confirmBid}>
+                <Text style={styles.confirmButtonText}>Confirm</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
-    </ScrollView>
+        </Modal>
+
+        {/* Auction Ended Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={alert}
+          onRequestClose={() => setAlert(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Auction has ended</Text>
+              <Text style={styles.modalMessage}>
+                {highestBidder} made the highest bid of ₹{bid}.
+              </Text>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => navigation.goBack()}>
+                <Text style={styles.confirmButtonText}>Exit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -178,24 +249,24 @@ export default AuctionRooms;
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: '#f0fdf4',
+  },
+  scrollContainer: {
+    flexGrow: 1,
     paddingHorizontal: 20,
     paddingTop: 40,
-  },
-  properties:{
-    color:'#000000',
-    fontSize:15,
+    alignItems: 'center',
   },
   timeComp: {
-    backgroundColor: '#4caf50',
+    backgroundColor: 'rgba(76, 175, 80, 0.9)',
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
     elevation: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 5,
     paddingVertical: 20,
@@ -203,8 +274,9 @@ const styles = StyleSheet.create({
   },
   timerText: {
     color: '#fff',
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
+    letterSpacing: 1,
   },
   content: {
     width: '100%',
@@ -212,7 +284,7 @@ const styles = StyleSheet.create({
   },
   item: {
     width: '100%',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderRadius: 20,
     padding: 15,
     flexDirection: 'row',
@@ -220,20 +292,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 5,
   },
   itemImage: {
     width: '40%',
-    height: 120,
+    height: 150,
     marginRight: 20,
     borderRadius: 15,
+    overflow: 'hidden',
   },
   image: {
     width: '100%',
     height: '100%',
-    borderRadius: 15,
     resizeMode: 'cover',
   },
   itemName: {
@@ -241,106 +313,118 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#333',
+    marginBottom: 5,
+  },
+  properties: {
+    color: '#555',
+    fontSize: 16,
+  },
+  location: {
+    color: '#666',
+    fontSize: 14,
+    marginTop: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   priceDisplay: {
     width: '100%',
-    backgroundColor: '#4caf50',
+    backgroundColor: 'rgba(76, 175, 80, 0.8)',
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 5,
   },
   priceText: {
     fontSize: 20,
-    color: '#ffffff',
+    color: '#fff',
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign: 'center',
   },
   bidOptions: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    gap: 15,
+    justifyContent: 'space-around',
     flexWrap: 'wrap',
     marginBottom: 20,
   },
   bidButton: {
-    backgroundColor: '#287344',
+    backgroundColor: '#388e3c',
     borderRadius: 15,
     paddingVertical: 15,
+    paddingHorizontal: 20,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 5,
     alignItems: 'center',
-    flex: 1,
-    minWidth: '30%',
+    marginBottom: 15,
+    minWidth: '45%',
   },
   bidButtonText: {
     fontSize: 18,
-    color: '#ffffff',
+    color: '#fff',
     fontWeight: 'bold',
   },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   modalContent: {
-    width: '80%',
-    backgroundColor: '#ffffff',
+    width: '85%',
+    backgroundColor: '#fff',
     borderRadius: 20,
     padding: 25,
     elevation: 15,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
+    shadowOffset: {width: 0, height: 5},
     shadowOpacity: 0.3,
     shadowRadius: 10,
   },
   modalTitle: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: '700',
-    color: '#333333',
+    color: '#333',
     marginBottom: 20,
     textAlign: 'center',
   },
   modalMessage: {
-    fontSize: 18,
-    color: '#555555',
+    fontSize: 20,
+    color: '#555',
     marginBottom: 25,
     textAlign: 'center',
   },
   confirmButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2196f3',
     borderRadius: 15,
     paddingVertical: 15,
     marginBottom: 15,
     alignItems: 'center',
   },
   confirmButtonText: {
-    color: '#ffffff',
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 20,
     fontWeight: '600',
   },
   cancelButton: {
-    backgroundColor: '#6c757d',
+    backgroundColor: '#757575',
     borderRadius: 15,
     paddingVertical: 15,
     alignItems: 'center',
   },
   cancelButtonText: {
-    color: '#ffffff',
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 20,
     fontWeight: '600',
   },
 });

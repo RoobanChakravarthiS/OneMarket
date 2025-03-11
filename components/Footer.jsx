@@ -15,15 +15,16 @@ import Home from './Home';
 import Auction from './Auction';
 import Market from './userMarket';
 import Stocks from './Profile';
-import notification from './notification.png'
+import notification from './notification.png';
 import Chatbot from './Chatbot';
 import chatbot from './robotics.png';
+
 const Tab = createBottomTabNavigator();
 
-const Footer = ({ navigation ,route}) => {
-  const userId=route.params.userId;
-  const username = route.params.username;
-  console.log(userId)
+const Footer = ({ navigation, route }) => {
+  const user = route.params.responseData;
+  const selectedCrop = route.params.newCrop;
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -42,14 +43,14 @@ const Footer = ({ navigation ,route}) => {
 
           return (
             <View style={[styles.tabBarIconContainer, focused && styles.tabBarIconContainerFocused]}>
-              <Image source={iconName} style={styles.tabBarIcon} />
+              <Image source={iconName} style={[styles.tabBarIcon, focused && styles.tabBarIconFocused]} />
             </View>
           );
         },
         tabBarLabel: ({ focused }) => {
           let label;
           if (route.name === 'chatbot') {
-            label = 'chatbot';
+            label = 'Chatbot';
           } else if (route.name === 'Auction') {
             label = 'Auction';
           } else if (route.name === 'Stocks') {
@@ -79,15 +80,15 @@ const Footer = ({ navigation ,route}) => {
           ),
           headerRight: () => (
             <View style={styles.headerRightContainer}>
-              <TouchableOpacity onPress={() => console.log('Profile Pressed')}>
+              <TouchableOpacity onPress={() => navigation.navigate('NegotiationList')}>
                 <Image source={notification} style={styles.profileImage} />
               </TouchableOpacity>
             </View>
           ),
         }}
         name="Home"
-        component={Homestack}
-        initialParams={{ userId,username }}
+        component={Home}
+        initialParams={{ user, selectedCrop }}
       />
       <Tab.Screen
         options={{
@@ -101,7 +102,7 @@ const Footer = ({ navigation ,route}) => {
           ),
           headerRight: () => (
             <View style={styles.headerRightContainer}>
-              <TouchableOpacity onPress={() => console.log('Profile Pressed')}>
+              <TouchableOpacity onPress={() => navigation.navigate('NegotiationList')}>
                 <Image source={notification} style={styles.profileImage} />
               </TouchableOpacity>
             </View>
@@ -109,7 +110,7 @@ const Footer = ({ navigation ,route}) => {
         }}
         name="Auction"
         component={Auction}
-        initialParams={{ userId,username }}
+        initialParams={{ user }}
       />
       <Tab.Screen
         options={{
@@ -123,7 +124,7 @@ const Footer = ({ navigation ,route}) => {
           ),
           headerRight: () => (
             <View style={styles.headerRightContainer}>
-              <TouchableOpacity onPress={() => console.log('Profile Pressed')}>
+              <TouchableOpacity onPress={() => navigation.navigate('NegotiationList')}>
                 <Image source={notification} style={styles.profileImage} />
               </TouchableOpacity>
             </View>
@@ -131,7 +132,7 @@ const Footer = ({ navigation ,route}) => {
         }}
         name="Stocks"
         component={Stocks}
-        initialParams={{ username,userId }}
+        initialParams={{ user }}
       />
       <Tab.Screen
         options={{
@@ -145,7 +146,7 @@ const Footer = ({ navigation ,route}) => {
           ),
           headerRight: () => (
             <View style={styles.headerRightContainer}>
-              <TouchableOpacity onPress={() => console.log('Profile Pressed')}>
+              <TouchableOpacity onPress={() => navigation.navigate('NegotiationList')}>
                 <Image source={notification} style={styles.profileImage} />
               </TouchableOpacity>
             </View>
@@ -153,7 +154,7 @@ const Footer = ({ navigation ,route}) => {
         }}
         name="chatbot"
         component={Chatbot}
-        initialParams={{ username,userId }}
+        initialParams={{ user }}
       />
     </Tab.Navigator>
   );
@@ -163,11 +164,13 @@ const styles = StyleSheet.create({
   headerStyle: {
     backgroundColor: '#ffffff',
     elevation: 0,
+    shadowOpacity: 0,
   },
   headerTitle: {
-    color: '#388E3C', // Darker green for header title
-    fontSize: 20,
+    color: '#388E3C',
+    fontSize: 22,
     fontWeight: 'bold',
+    letterSpacing: 1,
   },
   headerRightContainer: {
     flexDirection: 'row',
@@ -181,48 +184,50 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   tabBarStyle: {
-    height: 60,
-    backgroundColor: '#e8f5e9', // Slightly darker light background for tab bar
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    elevation: 8,
-    shadowColor: '#00000030',
+    height: 70,
+    backgroundColor: '#ffffff',
+    // borderTopLeftRadius: 25,
+    // borderTopRightRadius: 25,
+    elevation: 10,
+    shadowColor: '#00000040',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.2,
-    shadowRadius: 8,
-    paddingBottom: 5,
-    paddingTop: 5,
+    shadowRadius: 10,
+    paddingBottom: 10,
+    paddingTop: 10,
     borderTopWidth: 0.5,
-    borderTopColor: '#b0bec5', // Slightly darker border for subtle separation
+    borderTopColor: '#b0bec5',
   },
   tabBarLabel: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
     paddingBottom: 5,
+    letterSpacing: 0.5,
   },
   tabBarIconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 5,
-    // backgroundColor: '#e0e0e0', // Slightly darker light background for icon container
-    borderRadius: 12,
+    padding: 8,
+    borderRadius: 15,
   },
   tabBarIconContainerFocused: {
-    backgroundColor: '#c8e6c9', // Slightly darker green for focused state
-    borderRadius: 12,
-    padding: 8,
+    backgroundColor: '#e8f5e9',
+    borderRadius: 15,
+    padding: 10,
     transform: [{ scale: 1.1 }],
-    elevation: 4,
-    shadowColor: '#00000025',
+    elevation: 5,
+    shadowColor: '#00000030',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
   },
   tabBarIcon: {
-    width: 30,
-    height: 30,
+    width: 28,
+    height: 28,
     resizeMode: 'contain',
-    // backfaceVisibility:'hidden'
+  },
+  tabBarIconFocused: {
+    tintColor: '#388E3C',
   },
 });
 

@@ -10,60 +10,62 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Modal,
 } from 'react-native';
 
-const userAvatar = 'https://i.pravatar.cc/150?img=3'; // Replace with your user avatar URL
-const botAvatar = 'https://i.pravatar.cc/150?img=5'; // Replace with your bot avatar URL
+const userAvatar = 'https://i.pravatar.cc/150?img=3';
+const botAvatar = 'https://i.pravatar.cc/150?img=5';
+
+const suggestedPrompts = [
+  "நான் என் விளைபொருட்களை நியாயமான விலைக்கு விற்க முடியாமல் உள்ளேன். என்ன செய்யலாம்?",
+  "எனது பயிர்களுக்கு நோய்கள் தாக்கியுள்ளது. நான் என்ன செய்யலாம்?",
+  "நான் கால்நடைகளை வளர்க்க விரும்புகிறேன், ஆனால் எந்த இனத்தை தேர்வு செய்வது என்று தெரியவில்லை.",
+  "நான் மண் பரிசோதனை செய்ய வேண்டும். அது எதற்காக முக்கியம்?"
+];
 
 const Chatbot = () => {
   const [prompt, setPrompt] = useState('');
   const [conversation, setConversation] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const scrollViewRef = useRef();
 
-  const handleSend = async () => {
-    if (prompt.trim() === '') return;
+  const handleSend = async (selectedPrompt) => {
+    const message = selectedPrompt || prompt;
+    if (message.trim() === '') return;
 
-    // Add user message to the conversation
+    setShowSuggestions(false); // Close suggestions modal when selecting one
+
     const userMessage = {
-        type: 'user',
-        text: prompt,
-        timestamp: new Date(),
+      type: 'user',
+      text: message,
+      timestamp: new Date(),
     };
-    setConversation((prev) => [...prev, userMessage]);
+    setConversation(prev => [...prev, userMessage]);
     setPrompt('');
     setIsTyping(true);
 
     try {
-      const response = await fetch("https://340e-65-2-93-96.ngrok-free.app/generate", {
+      const response = await fetch('https://f71d-43-250-42-50.ngrok-free.app/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt: prompt }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: message }),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error('Network response was not ok.');
 
       const data = await response.json();
-      console.log('API Response:', data);  // Log the API response to check its format
+      console.log('API Response:', data);
 
       const botMessage = {
         type: 'bot',
-        text: data.generated_text || "Sorry, I don't understand that.",
+        text: data.response || "Sorry, I don't understand that.",
         timestamp: new Date(),
       };
-      setConversation((prev) => [...prev, botMessage]);
+      setConversation(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('API Error:', error.message);
-      const errorMessage = {
-        type: 'bot',
-        text: "Sorry, I don't understand that.",
-        timestamp: new Date(),
-      };
-      setConversation((prev) => [...prev, errorMessage]);
+      setConversation(prev => [...prev, { type: 'bot', text: "Sorry, I couldn't process your request.", timestamp: new Date() }]);
     } finally {
       setIsTyping(false);
     }
@@ -84,31 +86,44 @@ const Chatbot = () => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Chatbot</Text>
       </View>
+
+      {/* Suggested Prompts Button */}
+      <TouchableOpacity style={styles.suggestionsButton} onPress={() => setShowSuggestions(true)}>
+        <Text style={styles.suggestionsButtonText}>Suggestions</Text>
+      </TouchableOpacity>
+
+      {/* Modal for Suggested Prompts */}
+      <Modal visible={showSuggestions} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select a question:</Text>
+            {suggestedPrompts.map((item, index) => (
+              <TouchableOpacity key={index} style={styles.suggestionItem} onPress={() => handleSend(item)}>
+                <Text style={styles.suggestionText}>{item}</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity style={styles.closeButton} onPress={() => setShowSuggestions(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <ScrollView
         style={styles.chatContainer}
         ref={scrollViewRef}
         contentContainerStyle={styles.chatContent}
       >
         {conversation.map((msg, index) => (
-          <View
-            key={index}
-            style={[
-              styles.messageContainer,
-              msg.type === 'user' ? styles.userMessage : styles.botMessage,
-            ]}
-          >
-            {msg.type === 'bot' && (
-              <Image source={{ uri: botAvatar }} style={styles.avatar} />
-            )}
+          <View key={index} style={[styles.messageContainer, msg.type === 'user' ? styles.userMessage : styles.botMessage]}>
+            {msg.type === 'bot' && <Image source={{ uri: botAvatar }} style={styles.avatar} />}
             <View style={styles.messageContent}>
               <Text style={styles.messageText}>{msg.text}</Text>
               <Text style={styles.timestamp}>
                 {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </Text>
             </View>
-            {msg.type === 'user' && (
-              <Image source={{ uri: userAvatar }} style={styles.avatar} />
-            )}
+            {msg.type === 'user' && <Image source={{ uri: userAvatar }} style={styles.avatar} />}
           </View>
         ))}
         {isTyping && (
@@ -128,10 +143,11 @@ const Chatbot = () => {
           value={prompt}
           onChangeText={setPrompt}
           placeholder="Type a message..."
-          placeholderTextColor="#888"
+          placeholderTextColor="#000"
           multiline
+          
         />
-        <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
+        <TouchableOpacity style={styles.sendButton} onPress={() => handleSend()}>
           <Text style={styles.sendButtonText}>Send</Text>
         </TouchableOpacity>
       </View>
@@ -153,14 +169,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 4,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
   },
   headerTitle: {
     color: '#00796b',
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  suggestionsButton: {
+    backgroundColor: '#00796b',
+    padding: 10,
+    margin: 10,
+    borderRadius: 20,
+    alignSelf: 'center',
+  },
+  suggestionsButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  suggestionText:{
+    color:'#000'
   },
   chatContainer: {
     flex: 1,
@@ -192,69 +219,74 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 10,
     marginHorizontal: 10,
-    position: 'relative',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  userMessageContent: {
-    backgroundColor: '#0084ff',
   },
   messageText: {
-    color: '#333',
+    color: '#000',
     fontSize: 16,
   },
   typingText: {
-    color: '#555',
+    color: '#000',
     fontSize: 14,
     marginTop: 5,
   },
   timestamp: {
-    position: 'absolute',
-    bottom: -15,
-    right: 10,
     fontSize: 10,
     color: '#999',
   },
   inputContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
     borderTopWidth: 1,
     borderColor: '#ddd',
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    // backgroundColor: '#fff',
+    padding: 10,
   },
   input: {
     flex: 1,
-    minHeight: 40,
-    maxHeight: 100,
     borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginRight: 10,
-    color: '#333',
-    backgroundColor: '#fff',
     fontSize: 16,
+    color:'#000'
   },
   sendButton: {
     backgroundColor: '#00796b',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
   },
   sendButtonText: {
     color: '#fff',
     fontSize: 16,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    margin: 20,
+    padding: 20,
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
+  },
+  suggestionItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  closeButton: {
+    backgroundColor: '#00796b',
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
   },
 });
